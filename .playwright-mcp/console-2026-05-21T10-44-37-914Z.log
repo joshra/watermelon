@@ -1,0 +1,214 @@
+[     137ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[     140ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[     143ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[     144ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[     144ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[     144ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/peach.png:0
+[     144ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/pear.png:0
+[     145ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/coconut.png:0
+[     145ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/pineapple.png:0
+[     145ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cantaloupe.png:0
+[     146ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/watermelon.png:0
+[     245ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/favicon.ico:0
+[   40407ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[   40407ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   40423ms] [WARNING] matter-js: Matter.Engine.update: delta argument is recommended to be less than or equal to 16.667 ms. @ http://127.0.0.1:4329/vendor/matter.min.js:5
+[   42909ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   42910ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   45089ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   45089ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   46408ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   46408ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   47444ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   47444ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   48584ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   48585ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   49092ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   50362ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   50625ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   50626ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   53258ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   53258ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   54362ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   54363ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   54395ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   54395ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   61240ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   61240ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   62396ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   62397ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   65890ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   69524ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   69525ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   73874ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   73874ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   74995ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   74996ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   76590ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   76591ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   77813ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   77813ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   77830ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[   77830ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   82340ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   82340ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   86576ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[   86576ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   86774ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[   86774ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   91740ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   91741ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[   92894ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   92894ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[   94906ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[   94906ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   96007ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[   96007ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   96211ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[   96212ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[   98707ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  100011ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  100029ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  102557ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  102557ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  103940ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  103940ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  105063ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  105064ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  107472ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  107472ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  108479ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  108479ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  108574ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  108575ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  111539ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  112727ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  112813ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  115291ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  115291ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  118356ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  118356ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  120194ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  120195ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  124056ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  125177ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  126624ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  126624ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  128162ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  128163ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  129774ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  132657ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  132657ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  134028ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  134029ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  134045ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  134045ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  136574ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  136574ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  138989ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  140973ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  140974ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  142011ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  142012ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  143540ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  143540ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  145657ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  145657ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  154257ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  154258ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  155196ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  155196ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  155394ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  155394ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  155411ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  155411ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  157823ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  157824ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  158960ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  158960ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  160790ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  160790ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  164289ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  164289ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  165378ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  165378ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  170940ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  170941ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  171979ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  171979ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  172145ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  172145ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  175290ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  175290ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  176328ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  176328ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  178239ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  178239ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  183307ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  183307ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  186989ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  186990ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  190123ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  190123ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  193606ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  193606ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  199606ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  199606ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  204088ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  204089ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  205064ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  205064ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  205077ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  205078ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  207922ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  207922ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  211356ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  215455ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  215455ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  216323ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  216323ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  216474ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/apple.png:0
+[  216474ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  219223ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  219223ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  221790ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  221790ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  222707ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  222707ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  225555ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  225555ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  226458ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  226459ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  228123ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  228123ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  228974ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  228974ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  229008ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  229008ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  229191ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  229192ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  231907ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  231907ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  234973ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  237023ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  237023ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  245756ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/grape.png:0
+[  245756ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  248440ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  248440ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  249356ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  249356ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  251290ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  252141ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  253722ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  253722ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  254642ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/cherry.png:0
+[  254643ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  259773ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  259773ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  260860ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  260860ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  260875ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  260875ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
+[  261124ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/strawberry.png:0
+[  261124ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:4329/assets/fruits/orange.png:0
