@@ -4,6 +4,8 @@ dist/
 build/
 .cache/
 tmp/
+.playwright-mcp/
 playwright-report/
 test-results/
-
+output/
+pwa-*.png

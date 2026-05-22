@@ -10,7 +10,7 @@
 2. 再依規格生成 AI 視覺素材。
 3. 最後才進行遊戲系統實作與測試。
 
-遊戲需可在桌機與手機瀏覽器中運行，不依賴後端、資料庫或線上服務。完成後應能透過本機靜態伺服器或直接開啟網頁檔案遊玩。
+遊戲需可在桌機與手機瀏覽器中運行，不依賴後端、資料庫或線上服務。完成後應能透過本機靜態伺服器或直接開啟網頁檔案遊玩；若以本機靜態伺服器或 HTTPS 部署，還需可作為 PWA 安裝並在首次載入後離線遊玩。
 
 ## 2. 核心體驗
 
@@ -30,6 +30,7 @@
 - 檔案形式：HTML、CSS、JavaScript、圖片素材。
 - 建議物理引擎：Matter.js，放入專案本機檔案，不使用 CDN。
 - 繪製方式：單一 HTML Canvas。
+- PWA：需提供 Web App Manifest、Service Worker、安裝圖示與離線快取。
 - 後端：無。
 - 資料庫：無。
 - 建置流程：第一版不需要。
@@ -42,8 +43,15 @@
   index.html
   styles.css
   game.js
+  manifest.webmanifest
+  sw.js
   SPEC.md
   assets/
+    icons/
+      icon-192.png
+      icon-512.png
+      maskable-512.png
+      apple-touch-icon.png
     fruits/
       fruit-sheet.png
       cherry.png
@@ -321,8 +329,38 @@ window.advanceTime = function (ms) {
 - 重新開始後清空場面與分數。
 - 水果超過危險線後進入遊戲結束。
 - 桌機與手機尺寸下畫面無重疊。
+- Manifest 可被瀏覽器讀取，頁面可註冊 Service Worker。
+- 首次載入後，核心 HTML、CSS、JS、Matter.js、水果素材與 PWA 圖示可由快取離線提供。
+- PWA 安裝模式下仍維持直式畫面、觸控操作與全螢幕可用。
 
-## 12. 第一版不包含項目
+## 12. PWA 規格
+
+PWA 是第一版必要項目，但不得引入後端或線上 runtime dependency。
+
+Manifest 需求：
+
+- `name`：西瓜遊戲。
+- `short_name`：西瓜。
+- `display`：`standalone`。
+- `orientation`：`portrait`。
+- `start_url` 與 `scope` 使用相對路徑，方便部署在任意靜態目錄。
+- `theme_color` 與 `background_color` 需符合遊戲視覺。
+- 至少提供 `192x192`、`512x512`、`512x512 maskable` 與 Apple touch icon。
+
+Service Worker 需求：
+
+- 預先快取 `index.html`、`styles.css`、`game.js`、`manifest.webmanifest`、`vendor/matter.min.js`、水果 PNG 與 PWA 圖示。
+- 導覽請求在離線時回退到 `index.html`。
+- 非 GET 請求不攔截。
+- 更新快取版本時清除舊快取。
+- 不快取或依賴任何外部網域資源。
+
+限制：
+
+- 直接以 `file://` 開啟仍需能玩核心遊戲，但 PWA 安裝與 Service Worker 需透過 localhost、HTTPS 或其他支援 Service Worker 的靜態伺服器驗證。
+- PWA 圖示必須使用本專案 AI 素材衍生或另行 AI 生成，不得下載第三方 app icon。
+
+## 13. 第一版不包含項目
 
 第一版暫不包含：
 
@@ -338,7 +376,7 @@ window.advanceTime = function (ms) {
 
 這些可作為第二版功能。
 
-## 13. 實作順序
+## 14. 實作順序
 
 建議依下列順序實作：
 
@@ -352,10 +390,11 @@ window.advanceTime = function (ms) {
 8. 實作分數與下一顆水果。
 9. 實作遊戲結束與重新開始。
 10. 加入桌機與手機操作。
-11. 加入測試介面。
-12. 執行瀏覽器測試與截圖檢查。
+11. 加入 PWA manifest、Service Worker 與安裝圖示。
+12. 加入測試介面。
+13. 執行瀏覽器測試、PWA 離線檢查與截圖檢查。
 
-## 14. 驗收標準
+## 15. 驗收標準
 
 完成品需符合：
 
@@ -368,4 +407,5 @@ window.advanceTime = function (ms) {
 - 畫面乾淨，不重疊，不破版。
 - 瀏覽器 console 沒有錯誤。
 - `render_game_to_text()` 與 `advanceTime(ms)` 可供自動測試使用。
-
+- 可在支援 Service Worker 的靜態伺服器環境註冊為 PWA。
+- 首次載入後，重新整理或離線模式仍能載入核心遊戲檔案與素材。

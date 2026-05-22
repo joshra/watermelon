@@ -33,6 +33,7 @@ If a future task involves editing a document, spreadsheet, or presentation, use 
 - The game must remain a single-player static web page.
 - No backend, database, account system, or online runtime dependency.
 - Do not use CDN dependencies in the final game.
+- The game must be a PWA: include a local manifest, service worker, install icons, and offline cache for the core static assets.
 - Use exactly 11 fruit levels, in the order defined in `SPEC.md`.
 - AI fruit assets must have one cohesive style across all fruit.
 - Avoid original Suika game artwork or any third-party copied asset.
@@ -46,6 +47,9 @@ Planned implementation files:
 index.html
 styles.css
 game.js
+manifest.webmanifest
+sw.js
+assets/icons/*.png
 assets/fruits/*.png
 vendor/matter.min.js
 ```
@@ -65,8 +69,10 @@ docs/ASSET_GENERATION.md
 - Prefer a single Canvas with a fixed logical game size of `480x720`, scaled responsively.
 - Use Matter.js for collision and physics unless the user changes the requirement.
 - Provide `window.render_game_to_text()` and `window.advanceTime(ms)` for deterministic automated testing.
+- Keep PWA paths relative so the game can be served from the project root or a static subdirectory.
+- Service worker caching must cover HTML, CSS, JS, local Matter.js, fruit PNGs, manifest, and PWA icons.
 - Keep UI text short and avoid overlay clutter during gameplay.
-- Test desktop and mobile viewport sizes before reporting the game as complete.
+- Test desktop/mobile viewport sizes and PWA registration before reporting the game as complete.
 - After meaningful implementation work, update `progress.md` with completed items, test results, and remaining TODOs.
 
 ## Asset Handling
@@ -75,4 +81,4 @@ docs/ASSET_GENERATION.md
 - Copy selected final assets into this workspace under `assets/fruits/`; leave generated originals in place.
 - If using chroma-key removal, keep only the final transparent PNGs as project assets unless intermediate files are useful for review.
 - Do not reference assets from outside the project in `index.html`, `styles.css`, or `game.js`.
-
+- PWA icons should be derived from accepted project AI artwork or generated with the same visual style; do not use downloaded icon packs.

@@ -66,7 +66,16 @@ Constraints: exactly 11 fruits, all in the same visual style, front-facing or sl
 - No fruit is cropped, overlapped, labeled, or watermarked.
 - Final files are saved inside `assets/fruits/`.
 
+## PWA Icons
+
+The PWA app icons must also stay within the same asset policy:
+
+- Use accepted project AI artwork as the source, or generate a new icon with the same visual style.
+- Do not use downloaded icon packs, stock images, or copied Suika artwork.
+- Save final icons under `assets/icons/`.
+- Required outputs are `icon-192.png`, `icon-512.png`, `maskable-512.png`, and `apple-touch-icon.png`.
+- The maskable icon needs enough safe padding so the fruit is not cropped by launcher shapes.
+
 ## Known Generated Preview
 
 A generated preview sprite sheet exists outside the project in Codex's generated image area from an earlier exploration pass. Treat it as preview material only until it has been inspected, copied into the workspace, cleaned, and accepted.
-
