@@ -75,9 +75,9 @@ button:active {
   border-radius: 8px;
   display: grid;
   gap: 10px;
-  grid-template-columns: minmax(86px, 0.6fr) minmax(220px, 1.7fr) auto;
+  grid-template-columns: minmax(86px, 0.5fr) minmax(310px, 1.4fr) minmax(226px, auto);
   padding: 10px;
-  width: min(100%, 600px);
+  width: min(100%, 720px);
 }
 
 .score-block,
@@ -135,7 +135,7 @@ button:active {
 .actions {
   display: grid;
   gap: 8px;
-  grid-template-columns: repeat(2, minmax(58px, auto));
+  grid-template-columns: repeat(3, minmax(58px, auto));
 }
 
 .play-wrap {
@@ -209,7 +209,7 @@ button:active {
 
   .topbar {
     gap: 8px;
-    grid-template-columns: minmax(76px, 0.7fr) minmax(164px, 1.5fr) auto;
+    grid-template-columns: minmax(76px, 0.7fr) minmax(0, 1.5fr);
     padding: 8px;
   }
 
@@ -237,7 +237,8 @@ button:active {
   }
 
   .actions {
-    grid-template-columns: 1fr;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   button {
@@ -246,6 +247,6 @@ button:active {
   }
 
   .play-wrap {
-    width: min(98vw, calc((100vh - 128px) * 2 / 3));
+    width: min(98vw, calc((100vh - 174px) * 2 / 3));
   }
 }

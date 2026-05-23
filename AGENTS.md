@@ -72,6 +72,7 @@ docs/ASSET_GENERATION.md
 - Keep PWA paths relative so the game can be served from the project root or a static subdirectory.
 - Service worker caching must cover HTML, CSS, JS, local Matter.js, fruit PNGs, manifest, and PWA icons.
 - Keep UI text short and avoid overlay clutter during gameplay.
+- Current sound effects are synthesized with the browser Web Audio API in `game.js`; do not add external audio files or online audio dependencies unless the user explicitly asks.
 - Test desktop/mobile viewport sizes and PWA registration before reporting the game as complete.
 - After meaningful implementation work, update `progress.md` with completed items, test results, and remaining TODOs.
 

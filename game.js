@@ -24,6 +24,7 @@
   const DROP_COOLDOWN = 450;
   const GAME_OVER_HOLD = 2000;
   const FRESH_DROP_GRACE = 1500;
+  const SOUND_STORAGE_KEY = "suikaSoundEnabled";
 
   const FRUITS = [
     { level: 1, name: "櫻桃", key: "cherry", radius: 16, score: 0, color: "#ef4444" },
@@ -48,6 +49,7 @@
   const nextFruitName = document.getElementById("nextFruitName");
   const pauseBtn = document.getElementById("pauseBtn");
   const restartBtn = document.getElementById("restartBtn");
+  const soundBtn = document.getElementById("soundBtn");
   const primaryBtn = document.getElementById("primaryBtn");
   const messagePanel = document.getElementById("messagePanel");
   const messageTitle = document.getElementById("messageTitle");
@@ -65,6 +67,11 @@
   const mergeQueue = [];
   const effects = [];
   const images = new Map();
+  const audio = {
+    context: null,
+    master: null,
+    enabled: true,
+  };
 
   const state = {
     mode: "ready",
@@ -79,6 +86,110 @@
     lastFrame: 0,
     accumulator: 0,
   };
+
+  function readSoundPreference() {
+    try {
+      return localStorage.getItem(SOUND_STORAGE_KEY) !== "false";
+    } catch {
+      return true;
+    }
+  }
+
+  function writeSoundPreference() {
+    try {
+      localStorage.setItem(SOUND_STORAGE_KEY, String(audio.enabled));
+    } catch {
+      // Sound still works when storage is unavailable.
+    }
+  }
+
+  function setupAudioContext() {
+    if (audio.context || !audio.enabled) return audio.context;
+    const AudioCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtor) return null;
+    try {
+      audio.context = new AudioCtor();
+      audio.master = audio.context.createGain();
+      audio.master.gain.value = 0.18;
+      audio.master.connect(audio.context.destination);
+    } catch {
+      audio.context = null;
+      audio.master = null;
+    }
+    return audio.context;
+  }
+
+  function resumeAudioFromGesture() {
+    const context = setupAudioContext();
+    if (context && context.state === "suspended") {
+      context.resume().catch(() => {});
+    }
+  }
+
+  function scheduleTone(start, frequency, duration, gain, type = "sine", endFrequency = frequency) {
+    if (!audio.enabled) return;
+    const context = setupAudioContext();
+    if (!context || !audio.master) return;
+
+    const oscillator = context.createOscillator();
+    const envelope = context.createGain();
+    const now = context.currentTime;
+    const startTime = now + start;
+    const endTime = startTime + duration;
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, startTime);
+    oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, endFrequency), endTime);
+    envelope.gain.setValueAtTime(0.0001, startTime);
+    envelope.gain.exponentialRampToValueAtTime(gain, startTime + Math.min(0.025, duration * 0.35));
+    envelope.gain.exponentialRampToValueAtTime(0.0001, endTime);
+
+    oscillator.connect(envelope);
+    envelope.connect(audio.master);
+    oscillator.start(startTime);
+    oscillator.stop(endTime + 0.03);
+  }
+
+  function playDropSound() {
+    scheduleTone(0, 260, 0.08, 0.16, "triangle", 185);
+    scheduleTone(0.025, 110, 0.08, 0.1, "sine", 80);
+  }
+
+  function playMergeSound(level) {
+    const base = 330 + Math.min(level, 10) * 22;
+    scheduleTone(0, base, 0.09, 0.12, "sine", base * 1.4);
+    scheduleTone(0.055, base * 1.5, 0.11, 0.09, "triangle", base * 1.9);
+  }
+
+  function playPauseSound(paused) {
+    if (paused) {
+      scheduleTone(0, 360, 0.06, 0.08, "sine", 300);
+      scheduleTone(0.06, 300, 0.08, 0.07, "sine", 220);
+    } else {
+      scheduleTone(0, 260, 0.06, 0.08, "sine", 340);
+      scheduleTone(0.055, 340, 0.08, 0.07, "sine", 460);
+    }
+  }
+
+  function playGameOverSound() {
+    scheduleTone(0, 300, 0.16, 0.1, "triangle", 190);
+    scheduleTone(0.13, 220, 0.2, 0.08, "sine", 120);
+  }
+
+  function playRestartSound() {
+    scheduleTone(0, 390, 0.07, 0.08, "triangle", 520);
+    scheduleTone(0.055, 520, 0.08, 0.08, "triangle", 700);
+  }
+
+  function toggleSound() {
+    audio.enabled = !audio.enabled;
+    writeSoundPreference();
+    if (audio.enabled) {
+      resumeAudioFromGesture();
+      playRestartSound();
+    }
+    syncHud();
+  }
 
   function seededRandom() {
     state.seed = (state.seed * 1664525 + 1013904223) >>> 0;
@@ -198,6 +309,7 @@
     state.currentLevel = state.nextLevel;
     state.nextLevel = randomDropLevel();
     state.dropX = clampDropX(state.dropX);
+    playDropSound();
     syncHud();
     return true;
   }
@@ -205,8 +317,10 @@
   function togglePause() {
     if (state.mode === "playing") {
       state.mode = "paused";
+      playPauseSound(true);
     } else if (state.mode === "paused") {
       state.mode = "playing";
+      playPauseSound(false);
     }
     syncHud();
     render();
@@ -263,6 +377,7 @@
       const points = FRUITS[merge.nextLevel].score;
       state.score += points;
       merged = true;
+      playMergeSound(merge.nextLevel);
       effects.push({
         x: position.x,
         y: position.y,
@@ -293,6 +408,7 @@
     state.dangerHold = stableAboveLine ? state.dangerHold + dt : 0;
     if (state.dangerHold >= GAME_OVER_HOLD) {
       state.mode = "gameover";
+      playGameOverSound();
       syncHud();
     }
   }
@@ -441,6 +557,8 @@
     nextFruitImg.src = `assets/fruits/${next.key}.png`;
     pauseBtn.textContent = state.mode === "paused" ? "繼續" : "暫停";
     pauseBtn.disabled = state.mode === "ready" || state.mode === "gameover";
+    soundBtn.textContent = audio.enabled ? "音效開" : "音效關";
+    soundBtn.setAttribute("aria-pressed", String(audio.enabled));
 
     if (state.mode === "ready") {
       messagePanel.classList.remove("is-hidden");
@@ -475,6 +593,7 @@
 
   function handlePointerDown(event) {
     event.preventDefault();
+    resumeAudioFromGesture();
     state.dropX = clampDropX(pointerToCanvasX(event));
     if (dropCurrentFruit()) {
       render();
@@ -493,12 +612,16 @@
       render();
     } else if (event.code === "Space") {
       event.preventDefault();
+      resumeAudioFromGesture();
       dropCurrentFruit();
     } else if (key === "p") {
       event.preventDefault();
+      resumeAudioFromGesture();
       togglePause();
     } else if (key === "r") {
       event.preventDefault();
+      resumeAudioFromGesture();
+      playRestartSound();
       resetGame();
     } else if (key === "f") {
       event.preventDefault();
@@ -544,6 +667,7 @@
       dangerLineY: DANGER_Y,
       paused: state.mode === "paused",
       gameOver: state.mode === "gameover",
+      soundEnabled: audio.enabled,
       cooldownRemainingMs: Math.max(0, Math.ceil(DROP_COOLDOWN - (state.time - state.lastDropAt))),
       fruitCount: fruits.length,
       fruits,
@@ -562,12 +686,24 @@
   window.addEventListener("keydown", handleKeyDown);
   window.addEventListener("resize", setupCanvasScale);
   document.addEventListener("fullscreenchange", setupCanvasScale);
-  pauseBtn.addEventListener("click", togglePause);
-  restartBtn.addEventListener("click", resetGame);
+  soundBtn.addEventListener("click", () => {
+    toggleSound();
+  });
+  pauseBtn.addEventListener("click", () => {
+    resumeAudioFromGesture();
+    togglePause();
+  });
+  restartBtn.addEventListener("click", () => {
+    resumeAudioFromGesture();
+    playRestartSound();
+    resetGame();
+  });
   primaryBtn.addEventListener("click", () => {
+    resumeAudioFromGesture();
     if (state.mode === "paused") {
       togglePause();
     } else if (state.mode === "gameover") {
+      playRestartSound();
       resetGame();
     } else {
       dropCurrentFruit();
@@ -584,6 +720,7 @@
     render();
   };
 
+  audio.enabled = readSoundPreference();
   loadImages();
   resetGame();
   setupCanvasScale();

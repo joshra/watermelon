@@ -9,6 +9,7 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - AI asset-generation guide exists in `docs/ASSET_GENERATION.md`.
 - Static playable game files now exist: `index.html`, `styles.css`, `game.js`, local `vendor/matter.min.js`, and 11 AI fruit PNGs.
 - PWA support has been added with `manifest.webmanifest`, `sw.js`, and local icons under `assets/icons/`.
+- Toggleable Web Audio sound effects have been added for drop, merge, pause/resume, game over, and restart.
 
 ## User Decisions
 
@@ -19,6 +20,7 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - The fruit set must have one consistent overall style.
 - Documentation and agent guidance should come before system implementation.
 - The game must support PWA installation and offline replay after first load.
+- Sound effects should stay local and optional; do not introduce remote audio files or runtime dependencies.
 
 ## Skills To Use
 
@@ -38,6 +40,12 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-22: Confirmed browser service worker registration is controlled, cache key `suika-game-pwa-v1` exists, and offline reload returns the playable game in `ready` state with no console errors.
 - 2026-05-22: Ran the `develop-web-game` Playwright client against localhost. The game entered `playing`, accepted input, reported two fruits through `render_game_to_text()`, and had no console errors.
 - 2026-05-22: Captured desktop and mobile screenshots; layout remained readable without visible overlap.
+- 2026-05-24: Added synthesized sound effects and a topbar sound toggle.
+- 2026-05-24: `node --check game.js` passed after the sound changes.
+- 2026-05-24: Browser verification on localhost confirmed the sound toggle switches `soundEnabled` off/on, persists the preference, and still allows starting gameplay with no console errors.
+- 2026-05-24: Desktop and 390x740 mobile screenshots showed the sound button and HUD fit without text overlap or vertical clipping.
+- 2026-05-24: Ran the `develop-web-game` Playwright client against localhost after the final CSS/cache update; the game remained in `playing`, reported `soundEnabled: true`, had four fruits after the input burst, and produced no error artifacts.
+- 2026-05-24: Confirmed the localhost PWA controller and cache key use `suika-game-pwa-v3`.
 
 ## Notes
 
@@ -45,4 +53,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v1`; bump it when changing cached asset paths.
+- Service worker cache version is currently `suika-game-pwa-v3`; bump it when changing cached core assets or asset paths.
