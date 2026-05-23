@@ -20,6 +20,7 @@
 - 桌機與手機都要支援。
 - 要支援 PWA：可安裝、使用本機 manifest/icon/service worker、核心素材離線快取。
 - 音效使用瀏覽器 Web Audio API 即時合成，不依賴外部音訊檔。
+- PWA 核心檔案需避免舊快取卡住；Service Worker 更新後會接管並自動刷新一次。
 
 ## 建議工作順序
 

@@ -362,9 +362,11 @@ Manifest 需求：
 Service Worker 需求：
 
 - 預先快取 `index.html`、`styles.css`、`game.js`、`manifest.webmanifest`、`vendor/matter.min.js`、水果 PNG 與 PWA 圖示。
+- `index.html`、`styles.css`、`game.js`、`manifest.webmanifest` 與 `sw.js` 應優先嘗試網路更新，失敗時才回退快取，避免已安裝 PWA 長期使用舊核心檔案。
 - 導覽請求在離線時回退到 `index.html`。
 - 非 GET 請求不攔截。
 - 更新快取版本時清除舊快取。
+- 頁面註冊 Service Worker 時需帶版本資訊，且在新版 Service Worker 接管既有頁面後自動刷新一次，讓新 `game.js` 立即生效。
 - 不快取或依賴任何外部網域資源。
 
 限制：

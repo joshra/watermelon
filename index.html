@@ -54,8 +54,45 @@
     <script src="game.js"></script>
     <script>
       if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("./sw.js").catch(() => {});
+        const serviceWorkerVersion = "suika-game-pwa-v4";
+        const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
+        let refreshingForNewServiceWorker = false;
+
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (!hadServiceWorkerController || refreshingForNewServiceWorker) return;
+          refreshingForNewServiceWorker = true;
+          window.location.reload();
+        });
+
+        window.addEventListener("load", async () => {
+          try {
+            const registration = await navigator.serviceWorker.register(
+              `./sw.js?v=${serviceWorkerVersion}`,
+            );
+            const activateWaitingWorker = () => {
+              if (registration.waiting) {
+                registration.waiting.postMessage({ type: "SKIP_WAITING" });
+              }
+            };
+
+            registration.addEventListener("updatefound", () => {
+              const worker = registration.installing;
+              if (!worker) return;
+              worker.addEventListener("statechange", () => {
+                if (worker.state === "installed" && navigator.serviceWorker.controller) {
+                  activateWaitingWorker();
+                }
+              });
+            });
+
+            activateWaitingWorker();
+            registration.update().catch(() => {});
+            document.addEventListener("visibilitychange", () => {
+              if (!document.hidden) registration.update().catch(() => {});
+            });
+          } catch {
+            // The game remains playable without PWA registration.
+          }
         });
       }
     </script>

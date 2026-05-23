@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "suika-game-pwa-v3";
+const CACHE_NAME = "suika-game-pwa-v4";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -24,6 +24,43 @@ const CORE_ASSETS = [
   "./assets/fruits/coconut.png",
   "./assets/fruits/watermelon.png",
 ];
+const NETWORK_FIRST_ASSET_PATHS = [
+  "/",
+  "/index.html",
+  "/styles.css",
+  "/game.js",
+  "/manifest.webmanifest",
+  "/sw.js",
+];
+
+function shouldUseNetworkFirst(requestUrl) {
+  const scopePath = new URL(self.registration.scope).pathname;
+  if (requestUrl.pathname === scopePath) return true;
+  return NETWORK_FIRST_ASSET_PATHS.some((path) => requestUrl.pathname.endsWith(path));
+}
+
+async function cacheFreshResponse(request) {
+  const response = await fetch(request, { cache: "reload" });
+  if (response && response.status === 200) {
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(request, response.clone());
+  }
+  return response;
+}
+
+async function networkFirst(request) {
+  try {
+    return await cacheFreshResponse(request);
+  } catch {
+    return (await caches.match(request)) || Response.error();
+  }
+}
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -57,7 +94,7 @@ self.addEventListener("fetch", (event) => {
 
   if (event.request.mode === "navigate") {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: "reload" })
         .then((response) => {
           const copy = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", copy));
@@ -65,6 +102,11 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(() => caches.match("./index.html")),
     );
+    return;
+  }
+
+  if (shouldUseNetworkFirst(requestUrl)) {
+    event.respondWith(networkFirst(event.request));
     return;
   }
 

@@ -71,6 +71,7 @@ docs/ASSET_GENERATION.md
 - Provide `window.render_game_to_text()` and `window.advanceTime(ms)` for deterministic automated testing.
 - Keep PWA paths relative so the game can be served from the project root or a static subdirectory.
 - Service worker caching must cover HTML, CSS, JS, local Matter.js, fruit PNGs, manifest, and PWA icons.
+- The page registers `sw.js` with a version query and reloads once on service-worker controller changes so installed PWAs do not keep running stale cached `game.js`.
 - Keep UI text short and avoid overlay clutter during gameplay.
 - Current sound effects are synthesized with the browser Web Audio API in `game.js`; do not add external audio files or online audio dependencies unless the user explicitly asks.
 - Test desktop/mobile viewport sizes and PWA registration before reporting the game as complete.

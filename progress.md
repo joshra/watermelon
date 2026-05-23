@@ -46,6 +46,8 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-24: Desktop and 390x740 mobile screenshots showed the sound button and HUD fit without text overlap or vertical clipping.
 - 2026-05-24: Ran the `develop-web-game` Playwright client against localhost after the final CSS/cache update; the game remained in `playing`, reported `soundEnabled: true`, had four fruits after the input burst, and produced no error artifacts.
 - 2026-05-24: Confirmed the localhost PWA controller and cache key use `suika-game-pwa-v3`.
+- 2026-05-24: User reported mobile still had no sound, likely due to installed PWA cache. Added versioned service worker registration, automatic reload on controller change, `SKIP_WAITING` message handling, and network-first cache-reload fetches for `index.html`, `styles.css`, `game.js`, `manifest.webmanifest`, and `sw.js`.
+- 2026-05-24: Verified on localhost that the active Service Worker registers as `sw.js?v=suika-game-pwa-v4`, the cache key is `suika-game-pwa-v4`, the worker script contains `cache: "reload"`, network-first core fetch handling, and `SKIP_WAITING`; `render_game_to_text()` still reports `soundEnabled: true` with no console errors.
 
 ## Notes
 
@@ -53,4 +55,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v3`; bump it when changing cached core assets or asset paths.
+- Service worker cache version is currently `suika-game-pwa-v4`; bump it when changing cached core assets or asset paths.
