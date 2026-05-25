@@ -498,15 +498,11 @@
   }
 
   function drawBoard() {
-    const boardLeft = FIELD.left;
-    const boardRight = FIELD.right;
+    const boardLeft = FIELD.left - 12;
+    const boardRight = FIELD.right + 12;
     const boardWidth = boardRight - boardLeft;
-    const boardTop = 44;
+    const boardTop = 20;
     const boardHeight = FIELD.bottom - boardTop;
-    const frameX = boardLeft - 16;
-    const frameY = 26;
-    const frameWidth = boardWidth + 32;
-    const frameHeight = FIELD.bottom - frameY;
     const dangerProgress = Math.min(1, state.dangerHold / GAME_OVER_HOLD);
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
@@ -536,49 +532,37 @@
     }
 
     ctx.save();
-    ctx.shadowColor = "rgba(53, 73, 61, 0.18)";
-    ctx.shadowBlur = 28;
-    ctx.shadowOffsetY = 18;
-    roundedRectPath(frameX, frameY, frameWidth, frameHeight, 34);
-    const frameGradient = ctx.createLinearGradient(0, frameY, 0, frameY + frameHeight);
-    frameGradient.addColorStop(0, "#7ea56e");
-    frameGradient.addColorStop(0.45, "#5f875f");
-    frameGradient.addColorStop(1, "#4b6b46");
-    ctx.fillStyle = frameGradient;
-    ctx.fill();
-    ctx.restore();
-
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 26);
+    ctx.shadowColor = "rgba(53, 73, 61, 0.14)";
+    ctx.shadowBlur = 24;
+    ctx.shadowOffsetY = 16;
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 28);
     const interior = ctx.createLinearGradient(0, boardTop, 0, FIELD.bottom);
     interior.addColorStop(0, "rgba(255, 254, 247, 0.98)");
     interior.addColorStop(0.6, "rgba(242, 252, 248, 0.98)");
     interior.addColorStop(1, "rgba(233, 244, 233, 0.98)");
     ctx.fillStyle = interior;
     ctx.fill();
+    ctx.restore();
 
     ctx.save();
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 26);
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 28);
     ctx.clip();
     const shimmer = ctx.createLinearGradient(boardLeft, boardTop, boardRight, FIELD.bottom);
-    shimmer.addColorStop(0, "rgba(255, 255, 255, 0.32)");
+    shimmer.addColorStop(0, "rgba(255, 255, 255, 0.26)");
     shimmer.addColorStop(0.45, "rgba(255, 255, 255, 0)");
-    shimmer.addColorStop(1, "rgba(255, 230, 204, 0.14)");
+    shimmer.addColorStop(1, "rgba(255, 230, 204, 0.1)");
     ctx.fillStyle = shimmer;
     ctx.fillRect(boardLeft, boardTop, boardWidth, boardHeight);
-    ctx.fillStyle = "rgba(138, 194, 167, 0.07)";
+    ctx.fillStyle = "rgba(138, 194, 167, 0.05)";
     for (let y = boardTop + 18; y < FIELD.bottom; y += 38) {
       ctx.fillRect(boardLeft + 14, y, boardWidth - 28, 2);
     }
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.42)";
-    ctx.lineWidth = 2;
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 26);
+    ctx.strokeStyle = "#7da56f";
+    ctx.lineWidth = 12;
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 28);
     ctx.stroke();
-
-    ctx.fillStyle = "rgba(58, 88, 61, 0.14)";
-    roundedRectPath(boardLeft - 4, FIELD.bottom - 6, boardWidth + 8, 12, 8);
-    ctx.fill();
 
     ctx.save();
     ctx.shadowColor = `rgba(237, 122, 93, ${0.18 + dangerProgress * 0.25})`;

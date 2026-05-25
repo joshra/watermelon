@@ -54,6 +54,10 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-24: Ran the `develop-web-game` Playwright client against localhost after the visual refresh. The game entered `playing`, stayed responsive through four input bursts, reported `soundEnabled: true`, and produced screenshot/state artifacts under the local test output with no new regressions observed.
 - 2026-05-26: User reported the mobile layout still felt broken because the game area was clipped and then over-shrunk. Reworked the mobile breakpoint again so it stays non-scrollable, removes the decorative brand header on phones, keeps only the compact gameplay HUD, and lets the play area consume the remaining viewport height.
 - 2026-05-26: Verified on localhost at 390x844 that the mobile view no longer scrolls, the HUD stays compact, and the game board occupies most of the screen instead of shrinking to roughly half height.
+- 2026-05-26: Tightened the mobile header again by collapsing the top HUD into a denser three-column first row plus a short action row, reducing score, fruit-pill, and button heights while keeping current/next fruit readable.
+- 2026-05-26: Verified on localhost at 390x844 that the tighter mobile header frees additional vertical space for the board without reintroducing scrolling or the earlier half-height board regression.
+- 2026-05-26: Simplified the mobile playfield framing after user feedback that the board still had too many nested borders. Removed the decorative outer `play-wrap` shell, dropped the canvas border, and replaced the thick multi-layer board frame with a single thinner green board edge that sits closer to the canvas bounds.
+- 2026-05-26: Verified on localhost at 390x844 that the mobile board now reads as one main container instead of stacked cream-blue-green frames, while preserving the compact header and non-scrollable layout.
 
 ## Notes
 
@@ -61,4 +65,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v7`; bump it when changing cached core assets or asset paths.
+- Service worker cache version is currently `suika-game-pwa-v9`; bump it when changing cached core assets or asset paths.

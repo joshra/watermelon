@@ -334,49 +334,22 @@ button:disabled {
 
 .play-wrap {
   aspect-ratio: 2 / 3;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(255, 244, 223, 0.76)),
-    linear-gradient(180deg, rgba(170, 228, 255, 0.16), rgba(255, 196, 133, 0.12));
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 34px;
-  box-shadow: var(--shadow-panel);
+  background: transparent;
+  border: none;
+  border-radius: 28px;
+  box-shadow: 0 18px 34px rgba(54, 70, 58, 0.12);
   isolation: isolate;
-  overflow: hidden;
-  padding: 16px;
+  overflow: visible;
+  padding: 0;
   position: relative;
   touch-action: none;
   width: min(96vw, 480px, calc((100vh - 56px) * 2 / 3));
 }
 
-.play-wrap::before,
-.play-wrap::after {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-}
-
-.play-wrap::before {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0) 28%),
-    radial-gradient(circle at 80% 22%, rgba(198, 255, 231, 0.42), rgba(198, 255, 231, 0) 24%);
-  inset: 0;
-  z-index: 0;
-}
-
-.play-wrap::after {
-  background: linear-gradient(180deg, rgba(60, 92, 68, 0), rgba(60, 92, 68, 0.12));
-  border-radius: 0 0 34px 34px;
-  bottom: 0;
-  height: 24%;
-  left: 0;
-  right: 0;
-  z-index: 0;
-}
-
 #gameCanvas {
-  border: 1px solid rgba(92, 132, 107, 0.18);
-  border-radius: 26px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+  border: none;
+  border-radius: 24px;
+  box-shadow: none;
   display: block;
   height: 100%;
   position: relative;
@@ -516,49 +489,67 @@ button:disabled {
   }
 
   .topbar {
-    grid-template-columns: minmax(88px, 0.72fr) minmax(0, 1.28fr);
-    gap: 8px;
-    padding: 8px;
+    border-radius: 22px;
+    grid-template-columns: 76px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 6px;
+    padding: 6px;
   }
 
   .score-block {
-    grid-row: 1 / span 2;
-    min-height: 92px;
-    padding: 10px 12px;
-  }
-
-  .score-block strong {
-    font-size: 34px;
-  }
-
-  .fruit-status {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .fruit-pill {
-    gap: 8px;
-    min-height: 42px;
+    grid-row: 1;
+    min-height: 74px;
     padding: 8px 10px;
   }
 
+  .score-block strong {
+    font-size: 28px;
+  }
+
+  .fruit-status {
+    display: contents;
+  }
+
+  .fruit-pill {
+    align-content: center;
+    column-gap: 6px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    min-height: 74px;
+    padding: 7px 8px;
+    row-gap: 2px;
+  }
+
   .fruit-pill img {
-    height: 32px;
-    width: 32px;
+    grid-column: 1;
+    grid-row: 2;
+    height: 24px;
+    padding: 2px;
+    width: 24px;
   }
 
   .fruit-pill strong {
-    font-size: 15px;
+    font-size: 14px;
+    grid-column: 2;
+    grid-row: 2;
+    line-height: 1.1;
+  }
+
+  .fruit-pill .label {
+    font-size: 10px;
+    grid-column: 1 / -1;
+    letter-spacing: 0.04em;
+    margin-bottom: 1px;
   }
 
   .actions {
     gap: 6px;
     grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   button {
-    min-height: 36px;
-    padding: 0 10px;
+    min-height: 32px;
+    padding: 0 8px;
   }
 
   .play-column {
@@ -567,16 +558,16 @@ button:disabled {
   }
 
   .play-wrap {
-    border-radius: 28px;
+    border-radius: 24px;
     height: 100%;
     margin: 0 auto;
     max-width: 100%;
-    padding: 10px;
+    padding: 0;
     width: auto;
   }
 
   #gameCanvas {
-    border-radius: 22px;
+    border-radius: 20px;
   }
 
   .message-panel {
