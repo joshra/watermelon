@@ -10,6 +10,7 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Static playable game files now exist: `index.html`, `styles.css`, `game.js`, local `vendor/matter.min.js`, and 11 AI fruit PNGs.
 - PWA support has been added with `manifest.webmanifest`, `sw.js`, and local icons under `assets/icons/`.
 - Toggleable Web Audio sound effects have been added for drop, merge, pause/resume, game over, and restart.
+- The game screen has been visually refreshed with a desktop side panel, richer mobile HUD layout, and deeper canvas styling for the board, shadows, and merge feedback.
 
 ## User Decisions
 
@@ -48,6 +49,9 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-24: Confirmed the localhost PWA controller and cache key use `suika-game-pwa-v3`.
 - 2026-05-24: User reported mobile still had no sound, likely due to installed PWA cache. Added versioned service worker registration, automatic reload on controller change, `SKIP_WAITING` message handling, and network-first cache-reload fetches for `index.html`, `styles.css`, `game.js`, `manifest.webmanifest`, and `sw.js`.
 - 2026-05-24: Verified on localhost that the active Service Worker registers as `sw.js?v=suika-game-pwa-v4`, the cache key is `suika-game-pwa-v4`, the worker script contains `cache: "reload"`, network-first core fetch handling, and `SKIP_WAITING`; `render_game_to_text()` still reports `soundEnabled: true` with no console errors.
+- 2026-05-24: Refreshed the game presentation with a left-side desktop info panel, a compact two-column mobile HUD, glass-like cards, and a richer in-canvas board treatment with ambient gradients, fruit shadows, and particle-based merge feedback.
+- 2026-05-24: Verified the refreshed UI on localhost with desktop and 390x844 mobile screenshots. The desktop layout fit within one view, and the mobile layout kept the HUD plus full playable container visible without text overlap.
+- 2026-05-24: Ran the `develop-web-game` Playwright client against localhost after the visual refresh. The game entered `playing`, stayed responsive through four input bursts, reported `soundEnabled: true`, and produced screenshot/state artifacts under the local test output with no new regressions observed.
 
 ## Notes
 
@@ -55,4 +59,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v4`; bump it when changing cached core assets or asset paths.
+- Service worker cache version is currently `suika-game-pwa-v5`; bump it when changing cached core assets or asset paths.

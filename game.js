@@ -25,6 +25,7 @@
   const GAME_OVER_HOLD = 2000;
   const FRESH_DROP_GRACE = 1500;
   const SOUND_STORAGE_KEY = "suikaSoundEnabled";
+  const UI_FONT = '"Hiragino Maru Gothic ProN", "Yuanti TC", "Arial Rounded MT Bold", ui-rounded, "SF Pro Rounded", "PingFang TC", system-ui, sans-serif';
 
   const FRUITS = [
     { level: 1, name: "櫻桃", key: "cherry", radius: 16, score: 0, color: "#ef4444" },
@@ -378,12 +379,20 @@
       state.score += points;
       merged = true;
       playMergeSound(merge.nextLevel);
+      const particles = Array.from({ length: 8 }, () => ({
+        angle: seededRandom() * Math.PI * 2,
+        speed: 20 + seededRandom() * 34,
+        size: 4 + seededRandom() * 4,
+        lift: 10 + seededRandom() * 18,
+      }));
       effects.push({
         x: position.x,
         y: position.y,
         points,
         life: 420,
         maxLife: 420,
+        color: FRUITS[merge.nextLevel].color,
+        particles,
       });
     }
     if (merged) syncHud();
@@ -443,6 +452,31 @@
     requestAnimationFrame(tick);
   }
 
+  function roundedRectPath(x, y, width, height, radius) {
+    const r = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + width, y, x + width, y + height, r);
+    ctx.arcTo(x + width, y + height, x, y + height, r);
+    ctx.arcTo(x, y + height, x, y, r);
+    ctx.arcTo(x, y, x + width, y, r);
+    ctx.closePath();
+  }
+
+  function drawFruitShadow(x, y, radius, alpha = 0.18) {
+    ctx.save();
+    ctx.translate(x, y + radius * 0.62);
+    ctx.scale(1.15, 0.42);
+    const shadow = ctx.createRadialGradient(0, 0, radius * 0.2, 0, 0, radius * 1.04);
+    shadow.addColorStop(0, `rgba(24, 37, 32, ${alpha})`);
+    shadow.addColorStop(1, "rgba(24, 37, 32, 0)");
+    ctx.fillStyle = shadow;
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
   function drawFruitImage(body, level, alpha = 1, overrideRadius = null) {
     const fruit = FRUITS[level];
     const image = images.get(fruit.key);
@@ -467,34 +501,110 @@
     const boardLeft = FIELD.left;
     const boardRight = FIELD.right;
     const boardWidth = boardRight - boardLeft;
+    const boardTop = 44;
+    const boardHeight = FIELD.bottom - boardTop;
+    const frameX = boardLeft - 16;
+    const frameY = 26;
+    const frameWidth = boardWidth + 32;
+    const frameHeight = FIELD.bottom - frameY;
+    const dangerProgress = Math.min(1, state.dangerHold / GAME_OVER_HOLD);
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    ctx.fillStyle = "#dff8ff";
+
+    const sky = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+    sky.addColorStop(0, "#caefff");
+    sky.addColorStop(0.48, "#edfdf5");
+    sky.addColorStop(1, "#fff1dd");
+    ctx.fillStyle = sky;
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    ctx.fillStyle = "#f9fff7";
-    ctx.fillRect(boardLeft, 0, boardWidth, FIELD.bottom);
+    const glow = ctx.createRadialGradient(104, 96, 10, 104, 96, 180);
+    glow.addColorStop(0, "rgba(255, 247, 199, 0.94)");
+    glow.addColorStop(0.4, "rgba(255, 247, 199, 0.28)");
+    glow.addColorStop(1, "rgba(255, 247, 199, 0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    ctx.fillStyle = "#6b8f64";
-    ctx.fillRect(FIELD.left - FIELD.wall, 0, FIELD.wall, FIELD.bottom + FIELD.wall);
-    ctx.fillRect(FIELD.right, 0, FIELD.wall, FIELD.bottom + FIELD.wall);
-    ctx.fillRect(FIELD.left - FIELD.wall, FIELD.bottom, boardWidth + FIELD.wall * 2, FIELD.wall);
+    for (const orb of [
+      { x: 88, y: 164, r: 38, color: "rgba(255, 255, 255, 0.32)" },
+      { x: 402, y: 132, r: 52, color: "rgba(209, 248, 255, 0.28)" },
+      { x: 426, y: 598, r: 64, color: "rgba(255, 227, 192, 0.18)" },
+    ]) {
+      ctx.fillStyle = orb.color;
+      ctx.beginPath();
+      ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-    ctx.fillStyle = "#476b47";
-    ctx.fillRect(FIELD.left - FIELD.wall, FIELD.bottom, boardWidth + FIELD.wall * 2, 8);
+    ctx.save();
+    ctx.shadowColor = "rgba(53, 73, 61, 0.18)";
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 18;
+    roundedRectPath(frameX, frameY, frameWidth, frameHeight, 34);
+    const frameGradient = ctx.createLinearGradient(0, frameY, 0, frameY + frameHeight);
+    frameGradient.addColorStop(0, "#7ea56e");
+    frameGradient.addColorStop(0.45, "#5f875f");
+    frameGradient.addColorStop(1, "#4b6b46");
+    ctx.fillStyle = frameGradient;
+    ctx.fill();
+    ctx.restore();
 
-    ctx.strokeStyle = "rgba(231, 111, 81, 0.8)";
-    ctx.setLineDash([10, 8]);
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 26);
+    const interior = ctx.createLinearGradient(0, boardTop, 0, FIELD.bottom);
+    interior.addColorStop(0, "rgba(255, 254, 247, 0.98)");
+    interior.addColorStop(0.6, "rgba(242, 252, 248, 0.98)");
+    interior.addColorStop(1, "rgba(233, 244, 233, 0.98)");
+    ctx.fillStyle = interior;
+    ctx.fill();
+
+    ctx.save();
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 26);
+    ctx.clip();
+    const shimmer = ctx.createLinearGradient(boardLeft, boardTop, boardRight, FIELD.bottom);
+    shimmer.addColorStop(0, "rgba(255, 255, 255, 0.32)");
+    shimmer.addColorStop(0.45, "rgba(255, 255, 255, 0)");
+    shimmer.addColorStop(1, "rgba(255, 230, 204, 0.14)");
+    ctx.fillStyle = shimmer;
+    ctx.fillRect(boardLeft, boardTop, boardWidth, boardHeight);
+    ctx.fillStyle = "rgba(138, 194, 167, 0.07)";
+    for (let y = boardTop + 18; y < FIELD.bottom; y += 38) {
+      ctx.fillRect(boardLeft + 14, y, boardWidth - 28, 2);
+    }
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.42)";
     ctx.lineWidth = 2;
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 26);
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(58, 88, 61, 0.14)";
+    roundedRectPath(boardLeft - 4, FIELD.bottom - 6, boardWidth + 8, 12, 8);
+    ctx.fill();
+
+    ctx.save();
+    ctx.shadowColor = `rgba(237, 122, 93, ${0.18 + dangerProgress * 0.25})`;
+    ctx.shadowBlur = 18 + dangerProgress * 10;
+    ctx.strokeStyle = `rgba(235, 122, 93, ${0.6 + dangerProgress * 0.25})`;
+    ctx.setLineDash([12, 10]);
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(boardLeft + 6, DANGER_Y);
     ctx.lineTo(boardRight - 6, DANGER_Y);
     ctx.stroke();
-    ctx.setLineDash([]);
+    ctx.restore();
 
-    ctx.fillStyle = "rgba(231, 111, 81, 0.9)";
-    ctx.font = "700 12px ui-rounded, system-ui, sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText("危險線", boardRight - 10, DANGER_Y - 8);
+    ctx.setLineDash([]);
+    roundedRectPath(boardRight - 88, DANGER_Y - 24, 72, 22, 11);
+    ctx.fillStyle = "rgba(255, 250, 247, 0.92)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(235, 122, 93, 0.35)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.fillStyle = "#dd7258";
+    ctx.font = `800 11px ${UI_FONT}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("危險線", boardRight - 52, DANGER_Y - 13);
+    ctx.textBaseline = "alphabetic";
   }
 
   function drawDropGuide() {
@@ -502,14 +612,26 @@
     const level = state.currentLevel;
     const radius = FRUITS[level].radius;
     const x = clampDropX(state.dropX, level);
+    const active = canDrop();
     ctx.save();
-    ctx.strokeStyle = "rgba(49, 90, 64, 0.25)";
-    ctx.lineWidth = 2;
+    const guide = ctx.createLinearGradient(x, 24, x, SPAWN_Y + radius + 12);
+    guide.addColorStop(0, "rgba(76, 122, 85, 0)");
+    guide.addColorStop(0.18, `rgba(76, 122, 85, ${active ? 0.2 : 0.08})`);
+    guide.addColorStop(1, `rgba(76, 122, 85, ${active ? 0.55 : 0.22})`);
+    ctx.strokeStyle = guide;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([8, 8]);
     ctx.beginPath();
-    ctx.moveTo(x, 8);
+    ctx.moveTo(x, 24);
     ctx.lineTo(x, SPAWN_Y + radius + 10);
     ctx.stroke();
-    drawFruitImage({ position: { x, y: SPAWN_Y }, angle: 0 }, level, canDrop() ? 0.62 : 0.32, radius);
+    ctx.setLineDash([]);
+    ctx.fillStyle = active ? "rgba(255, 255, 255, 0.82)" : "rgba(255, 255, 255, 0.46)";
+    ctx.beginPath();
+    ctx.arc(x, 24, 7, 0, Math.PI * 2);
+    ctx.fill();
+    drawFruitShadow(x, SPAWN_Y, radius, active ? 0.14 : 0.08);
+    drawFruitImage({ position: { x, y: SPAWN_Y }, angle: 0 }, level, active ? 0.68 : 0.34, radius);
     ctx.restore();
   }
 
@@ -518,6 +640,8 @@
       ([a], [b]) => a.position.y - b.position.y,
     );
     for (const [body, data] of bodies) {
+      const fruit = FRUITS[data.level];
+      drawFruitShadow(body.position.x, body.position.y, fruit.radius, 0.18);
       drawFruitImage(body, data.level, 1);
     }
   }
@@ -525,17 +649,34 @@
   function drawEffects() {
     for (const effect of effects) {
       const t = Math.max(0, effect.life / effect.maxLife);
+      const progress = 1 - t;
       ctx.save();
       ctx.globalAlpha = t;
-      ctx.strokeStyle = `rgba(240, 184, 77, ${t})`;
+      for (const particle of effect.particles) {
+        const distance = particle.speed * progress;
+        const px = effect.x + Math.cos(particle.angle) * distance;
+        const py = effect.y + Math.sin(particle.angle) * distance - particle.lift * progress;
+        ctx.fillStyle = effect.color;
+        ctx.beginPath();
+        ctx.arc(px, py, particle.size * (0.3 + t * 0.7), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.strokeStyle = effect.color;
       ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.arc(effect.x, effect.y, 18 + (1 - t) * 24, 0, Math.PI * 2);
+      ctx.arc(effect.x, effect.y, 18 + progress * 24, 0, Math.PI * 2);
       ctx.stroke();
-      ctx.fillStyle = "#e76f51";
-      ctx.font = "800 18px ui-rounded, system-ui, sans-serif";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+      roundedRectPath(effect.x - 34, effect.y - 38 - progress * 16, 68, 28, 14);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.74)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = "#de7658";
+      ctx.font = `900 18px ${UI_FONT}`;
       ctx.textAlign = "center";
-      ctx.fillText(`+${effect.points}`, effect.x, effect.y - 18 - (1 - t) * 18);
+      ctx.textBaseline = "middle";
+      ctx.fillText(`+${effect.points}`, effect.x, effect.y - 24 - progress * 16);
       ctx.restore();
     }
   }
@@ -563,7 +704,7 @@
     if (state.mode === "ready") {
       messagePanel.classList.remove("is-hidden");
       messageTitle.textContent = "準備開始";
-      messageText.textContent = "移動位置後投放水果";
+      messageText.textContent = "移動到想落下的位置，開始第一顆水果。";
       primaryBtn.textContent = "開始";
     } else if (state.mode === "paused") {
       messagePanel.classList.remove("is-hidden");

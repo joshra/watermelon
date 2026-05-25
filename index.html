@@ -16,37 +16,54 @@
   </head>
   <body>
     <main class="game-shell" aria-label="西瓜遊戲">
-      <section class="topbar" aria-label="遊戲資訊">
-        <div class="score-block">
-          <span class="label">分數</span>
-          <strong id="scoreValue">0</strong>
-        </div>
-        <div class="fruit-status">
-          <div class="fruit-pill">
-            <span class="label">目前</span>
-            <img id="currentFruitImg" alt="" width="34" height="34">
-            <strong id="currentFruitName">櫻桃</strong>
+      <section class="info-panel" aria-label="遊戲資訊">
+        <header class="brand-card">
+          <p class="eyebrow">Fruit Merge Puzzle</p>
+          <h1>西瓜遊戲</h1>
+          <p class="brand-copy">把一樣的水果一路養大，別讓果堆在危險線上停太久。</p>
+          <div class="feature-pills" aria-label="遊戲特色">
+            <span>11 種水果</span>
+            <span>桌機手機都能玩</span>
+            <span>離線可玩</span>
           </div>
-          <div class="fruit-pill">
-            <span class="label">下一顆</span>
-            <img id="nextFruitImg" alt="" width="34" height="34">
-            <strong id="nextFruitName">草莓</strong>
+        </header>
+
+        <section class="topbar" aria-label="目前狀態">
+          <div class="score-block">
+            <span class="label">分數</span>
+            <strong id="scoreValue">0</strong>
           </div>
-        </div>
-        <div class="actions">
-          <button id="pauseBtn" type="button">暫停</button>
-          <button id="restartBtn" type="button">重開</button>
-          <button id="soundBtn" type="button" aria-pressed="true">音效開</button>
-        </div>
+          <div class="fruit-status">
+            <div class="fruit-pill">
+              <span class="label">目前</span>
+              <img id="currentFruitImg" alt="" width="44" height="44">
+              <strong id="currentFruitName">櫻桃</strong>
+            </div>
+            <div class="fruit-pill">
+              <span class="label">下一顆</span>
+              <img id="nextFruitImg" alt="" width="44" height="44">
+              <strong id="nextFruitName">草莓</strong>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="pauseBtn" type="button">暫停</button>
+            <button id="restartBtn" type="button">重開</button>
+            <button id="soundBtn" type="button" aria-pressed="true">音效開</button>
+          </div>
+        </section>
+
+        <p class="hint-card">滑鼠或手指移動位置後點一下投放。P 暫停，R 重開，F 全螢幕。</p>
       </section>
 
-      <section class="play-wrap" aria-label="遊戲區">
-        <canvas id="gameCanvas" width="480" height="720"></canvas>
-        <div id="messagePanel" class="message-panel">
-          <h1 id="messageTitle">準備開始</h1>
-          <p id="messageText">移動位置後投放水果</p>
-          <button id="primaryBtn" type="button">開始</button>
-        </div>
+      <section class="play-column">
+        <section class="play-wrap" aria-label="遊戲區">
+          <canvas id="gameCanvas" width="480" height="720"></canvas>
+          <div id="messagePanel" class="message-panel">
+            <h1 id="messageTitle">準備開始</h1>
+            <p id="messageText">移動位置後投放水果</p>
+            <button id="primaryBtn" type="button">開始</button>
+          </div>
+        </section>
       </section>
     </main>
 
@@ -54,7 +71,7 @@
     <script src="game.js"></script>
     <script>
       if ("serviceWorker" in navigator) {
-        const serviceWorkerVersion = "suika-game-pwa-v4";
+        const serviceWorkerVersion = "suika-game-pwa-v5";
         const hadServiceWorkerController = Boolean(navigator.serviceWorker.controller);
         let refreshingForNewServiceWorker = false;
 
