@@ -58,6 +58,8 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-26: Verified on localhost at 390x844 that the tighter mobile header frees additional vertical space for the board without reintroducing scrolling or the earlier half-height board regression.
 - 2026-05-26: Simplified the mobile playfield framing after user feedback that the board still had too many nested borders. Removed the decorative outer `play-wrap` shell, dropped the canvas border, and replaced the thick multi-layer board frame with a single thinner green board edge that sits closer to the canvas bounds.
 - 2026-05-26: Verified on localhost at 390x844 that the mobile board now reads as one main container instead of stacked cream-blue-green frames, while preserving the compact header and non-scrollable layout.
+- 2026-05-26: User still wanted the main playfield to waste less area, so the actual field geometry was widened and lowered instead of only stretching decorative borders. Expanded the real left/right/bottom physics bounds and moved the visual board edge closer to the canvas edges so the white playable area consumes more of the screen.
+- 2026-05-26: Verified on localhost at 390x844 that the playfield now sits noticeably closer to the canvas edges on mobile, with less unused blue margin around the main board.
 
 ## Notes
 
@@ -65,4 +67,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v9`; bump it when changing cached core assets or asset paths.
+- Service worker cache version is currently `suika-game-pwa-v10`; bump it when changing cached core assets or asset paths.

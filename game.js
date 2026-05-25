@@ -14,10 +14,10 @@
   const HEIGHT = 720;
   const FIXED_STEP = 1000 / 60;
   const FIELD = {
-    left: 36,
-    right: 444,
-    bottom: 690,
-    wall: 28,
+    left: 24,
+    right: 456,
+    bottom: 704,
+    wall: 24,
   };
   const DANGER_Y = 125;
   const SPAWN_Y = 86;
@@ -498,10 +498,10 @@
   }
 
   function drawBoard() {
-    const boardLeft = FIELD.left - 12;
-    const boardRight = FIELD.right + 12;
+    const boardLeft = FIELD.left - 10;
+    const boardRight = FIELD.right + 10;
     const boardWidth = boardRight - boardLeft;
-    const boardTop = 20;
+    const boardTop = 10;
     const boardHeight = FIELD.bottom - boardTop;
     const dangerProgress = Math.min(1, state.dangerHold / GAME_OVER_HOLD);
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -535,7 +535,7 @@
     ctx.shadowColor = "rgba(53, 73, 61, 0.14)";
     ctx.shadowBlur = 24;
     ctx.shadowOffsetY = 16;
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 28);
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24);
     const interior = ctx.createLinearGradient(0, boardTop, 0, FIELD.bottom);
     interior.addColorStop(0, "rgba(255, 254, 247, 0.98)");
     interior.addColorStop(0.6, "rgba(242, 252, 248, 0.98)");
@@ -545,7 +545,7 @@
     ctx.restore();
 
     ctx.save();
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 28);
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24);
     ctx.clip();
     const shimmer = ctx.createLinearGradient(boardLeft, boardTop, boardRight, FIELD.bottom);
     shimmer.addColorStop(0, "rgba(255, 255, 255, 0.26)");
@@ -560,8 +560,8 @@
     ctx.restore();
 
     ctx.strokeStyle = "#7da56f";
-    ctx.lineWidth = 12;
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 28);
+    ctx.lineWidth = 10;
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24);
     ctx.stroke();
 
     ctx.save();
