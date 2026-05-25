@@ -429,7 +429,16 @@ button:disabled {
 }
 
 @media (max-width: 920px) {
+  html,
   body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  body {
+    align-items: flex-start;
     padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
   }
 
@@ -437,6 +446,7 @@ button:disabled {
     gap: 12px;
     grid-template-columns: 1fr;
     justify-items: center;
+    max-height: none;
     width: min(100%, 520px);
   }
 
@@ -457,89 +467,112 @@ button:disabled {
   }
 
   .play-wrap {
-    width: min(100%, 480px, calc((100vh - 246px) * 2 / 3));
+    width: min(100%, 480px);
   }
 }
 
 @media (max-width: 560px) {
+  html,
   body {
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    align-items: center;
     padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
   }
 
+  .game-shell {
+    align-items: stretch;
+    gap: 6px;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: calc(100dvh - 16px);
+    max-height: none;
+  }
+
+  .info-panel {
+    gap: 0;
+  }
+
   .brand-card {
-    padding: 16px;
+    display: none;
   }
 
   .eyebrow {
-    font-size: 11px;
+    display: none;
   }
 
   .brand-card h1 {
-    font-size: 30px;
+    font-size: 24px;
+    line-height: 1;
   }
 
   .brand-copy,
+  .feature-pills,
   .hint-card {
     display: none;
   }
 
-  .feature-pills {
-    margin-top: 12px;
-  }
-
-  .feature-pills span {
-    font-size: 11px;
-    padding: 6px 10px;
-  }
-
   .topbar {
     grid-template-columns: minmax(88px, 0.72fr) minmax(0, 1.28fr);
-    gap: 10px;
-    padding: 10px;
+    gap: 8px;
+    padding: 8px;
   }
 
   .score-block {
     grid-row: 1 / span 2;
-    min-height: 112px;
-    padding: 14px 14px;
+    min-height: 92px;
+    padding: 10px 12px;
   }
 
   .score-block strong {
-    font-size: 42px;
+    font-size: 34px;
   }
 
   .fruit-status {
     grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .fruit-pill {
     gap: 8px;
-    padding: 10px;
+    min-height: 42px;
+    padding: 8px 10px;
   }
 
   .fruit-pill img {
-    height: 38px;
-    width: 38px;
+    height: 32px;
+    width: 32px;
   }
 
   .fruit-pill strong {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .actions {
-    gap: 8px;
+    gap: 6px;
     grid-column: 1 / -1;
   }
 
   button {
-    min-height: 40px;
-    padding: 0 12px;
+    min-height: 36px;
+    padding: 0 10px;
+  }
+
+  .play-column {
+    min-height: 0;
+    width: 100%;
   }
 
   .play-wrap {
     border-radius: 28px;
-    padding: 12px;
-    width: min(100%, 480px, calc((100vh - 360px) * 2 / 3));
+    height: 100%;
+    margin: 0 auto;
+    max-width: 100%;
+    padding: 10px;
+    width: auto;
   }
 
   #gameCanvas {
@@ -547,15 +580,15 @@ button:disabled {
   }
 
   .message-panel {
-    min-width: 214px;
-    padding: 18px 20px;
+    min-width: 196px;
+    padding: 16px 18px;
   }
 
   .message-panel h1 {
-    font-size: 30px;
+    font-size: 28px;
   }
 
   .message-panel p {
-    font-size: 14px;
+    font-size: 13px;
   }
 }

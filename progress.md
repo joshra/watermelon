@@ -52,6 +52,8 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-24: Refreshed the game presentation with a left-side desktop info panel, a compact two-column mobile HUD, glass-like cards, and a richer in-canvas board treatment with ambient gradients, fruit shadows, and particle-based merge feedback.
 - 2026-05-24: Verified the refreshed UI on localhost with desktop and 390x844 mobile screenshots. The desktop layout fit within one view, and the mobile layout kept the HUD plus full playable container visible without text overlap.
 - 2026-05-24: Ran the `develop-web-game` Playwright client against localhost after the visual refresh. The game entered `playing`, stayed responsive through four input bursts, reported `soundEnabled: true`, and produced screenshot/state artifacts under the local test output with no new regressions observed.
+- 2026-05-26: User reported the mobile layout still felt broken because the game area was clipped and then over-shrunk. Reworked the mobile breakpoint again so it stays non-scrollable, removes the decorative brand header on phones, keeps only the compact gameplay HUD, and lets the play area consume the remaining viewport height.
+- 2026-05-26: Verified on localhost at 390x844 that the mobile view no longer scrolls, the HUD stays compact, and the game board occupies most of the screen instead of shrinking to roughly half height.
 
 ## Notes
 
@@ -59,4 +61,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v5`; bump it when changing cached core assets or asset paths.
+- Service worker cache version is currently `suika-game-pwa-v7`; bump it when changing cached core assets or asset paths.
