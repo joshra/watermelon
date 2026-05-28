@@ -469,6 +469,28 @@ button:disabled {
     gap: 0;
   }
 
+  .topbar,
+  .message-panel {
+    backdrop-filter: none;
+    background: rgba(255, 251, 244, 0.96);
+    box-shadow: 0 8px 18px rgba(54, 70, 58, 0.1);
+  }
+
+  .score-block,
+  .fruit-pill {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  }
+
+  button {
+    box-shadow:
+      0 4px 10px rgba(45, 72, 56, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    transition:
+      transform 120ms ease,
+      border-color 120ms ease,
+      background 120ms ease;
+  }
+
   .brand-card {
     display: none;
   }
@@ -553,17 +575,19 @@ button:disabled {
   }
 
   .play-column {
+    align-content: start;
     min-height: 0;
+    overflow: hidden;
     width: 100%;
   }
 
   .play-wrap {
     border-radius: 24px;
-    height: 100%;
+    height: auto;
     margin: 0 auto;
     max-width: 100%;
     padding: 0;
-    width: auto;
+    width: 100%;
   }
 
   #gameCanvas {

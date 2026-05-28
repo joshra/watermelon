@@ -11,6 +11,7 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - PWA support has been added with `manifest.webmanifest`, `sw.js`, and local icons under `assets/icons/`.
 - Toggleable Web Audio sound effects have been added for drop, merge, pause/resume, game over, and restart.
 - The game screen has been visually refreshed with a desktop side panel, richer mobile HUD layout, and deeper canvas styling for the board, shadows, and merge feedback.
+- Mobile PWA automatic power-saving has been added: the game loop now stops when idle/static, pauses work while hidden, uses Matter.js sleeping, and caches repeated canvas drawing work.
 
 ## User Decisions
 
@@ -31,7 +32,7 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 
 ## Next TODOs
 
-- Run a deeper gameplay regression for merge behavior, scoring, restart, pause, and game over.
+- Optionally force a high-stack game-over scenario on a real mobile browser/PWA to visually confirm the final overlay after long play.
 - Optionally test install prompts in the target deployment browser, because install UI differs by browser and OS.
 
 ## Test Results
@@ -60,6 +61,15 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-26: Verified on localhost at 390x844 that the mobile board now reads as one main container instead of stacked cream-blue-green frames, while preserving the compact header and non-scrollable layout.
 - 2026-05-26: User still wanted the main playfield to waste less area, so the actual field geometry was widened and lowered instead of only stretching decorative borders. Expanded the real left/right/bottom physics bounds and moved the visual board edge closer to the canvas edges so the white playable area consumes more of the screen.
 - 2026-05-26: Verified on localhost at 390x844 that the playfield now sits noticeably closer to the canvas edges on mobile, with less unused blue margin around the main board.
+- 2026-05-28: Implemented automatic mobile PWA power-saving. The main loop now coalesces render requests, stops in ready/paused/static states, pauses work while hidden, enables Matter.js sleeping, and caches the static board, fruit shadows, and scaled fruit sprites.
+- 2026-05-28: Added a `power` block to `render_game_to_text()` so browser tests can confirm animation frames, render count, physics steps, active/sleeping fruit counts, and cache usage without adding visible UI.
+- 2026-05-28: Reduced mobile-only visual cost by disabling card backdrop blur and reducing large shadows at the phone breakpoint. Also fixed a 390px viewport overflow found during verification by making the mobile playfield width-fit before height-fit.
+- 2026-05-28: Bumped the PWA service worker/cache version to `suika-game-pwa-v11`.
+- 2026-05-28: `node --check game.js` passed.
+- 2026-05-28: Ran the `develop-web-game` Playwright client against localhost after the power-saving changes. The game accepted input, produced multiple fruits, performed a merge with score `32`, exposed the new `power` state, and produced no error artifacts.
+- 2026-05-28: Browser verification at 390x844 confirmed the mobile HUD and game board fit without horizontal clipping or scrolling. Ready and paused states both showed `0` additional animation frames, renders, or physics steps over a 2.1s idle wait.
+- 2026-05-28: Verified localhost PWA registration uses `sw.js?v=suika-game-pwa-v11`; cache key `suika-game-pwa-v11` exists and includes the shell, local Matter.js, representative fruit PNGs, manifest, and icons.
+- 2026-05-28: Verified restart returns to `ready` with score `0`, no fruits, and no console errors.
 
 ## Notes
 
@@ -67,4 +77,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v10`; bump it when changing cached core assets or asset paths.
+- Service worker cache version is currently `suika-game-pwa-v11`; bump it when changing cached core assets or asset paths.

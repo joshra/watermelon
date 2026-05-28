@@ -24,6 +24,7 @@
   const DROP_COOLDOWN = 450;
   const GAME_OVER_HOLD = 2000;
   const FRESH_DROP_GRACE = 1500;
+  const IDLE_SPEED = 0.035;
   const SOUND_STORAGE_KEY = "suikaSoundEnabled";
   const UI_FONT = '"Hiragino Maru Gothic ProN", "Yuanti TC", "Arial Rounded MT Bold", ui-rounded, "SF Pro Rounded", "PingFang TC", system-ui, sans-serif';
 
@@ -57,7 +58,7 @@
   const messageText = document.getElementById("messageText");
 
   const engine = Engine.create({
-    enableSleeping: false,
+    enableSleeping: true,
     positionIterations: 8,
     velocityIterations: 6,
   });
@@ -68,10 +69,18 @@
   const mergeQueue = [];
   const effects = [];
   const images = new Map();
+  const fruitSpriteCache = new Map();
+  const shadowCache = new Map();
+  const boardCache = document.createElement("canvas");
+  const boardCtx = boardCache.getContext("2d");
+  boardCache.width = WIDTH;
+  boardCache.height = HEIGHT;
+
   const audio = {
     context: null,
     master: null,
     enabled: true,
+    suspendedForVisibility: false,
   };
 
   const state = {
@@ -86,6 +95,17 @@
     seed: 1729,
     lastFrame: 0,
     accumulator: 0,
+    needsRender: true,
+  };
+
+  const power = {
+    animationFrameId: 0,
+    animationFrames: 0,
+    renderCount: 0,
+    physicsSteps: 0,
+    boardCacheBuilds: 0,
+    loopActive: false,
+    lastRenderReason: "init",
   };
 
   function readSoundPreference() {
@@ -102,6 +122,91 @@
     } catch {
       // Sound still works when storage is unavailable.
     }
+  }
+
+  function requestFrame() {
+    if (document.hidden || power.animationFrameId) return;
+    power.loopActive = true;
+    power.animationFrameId = requestAnimationFrame(tick);
+  }
+
+  function requestRender(reason = "update") {
+    state.needsRender = true;
+    power.lastRenderReason = reason;
+    requestFrame();
+  }
+
+  function cancelGameLoop() {
+    if (power.animationFrameId) {
+      cancelAnimationFrame(power.animationFrameId);
+      power.animationFrameId = 0;
+    }
+    power.loopActive = false;
+    state.lastFrame = 0;
+    state.accumulator = 0;
+  }
+
+  function cooldownRemainingMs() {
+    return Math.max(0, Math.ceil(DROP_COOLDOWN - (state.time - state.lastDropAt)));
+  }
+
+  function activeFruitCount() {
+    let active = 0;
+    for (const body of fruitBodies.keys()) {
+      if (!body.isSleeping || body.speed > IDLE_SPEED || body.angularSpeed > IDLE_SPEED) {
+        active += 1;
+      }
+    }
+    return active;
+  }
+
+  function sleepingFruitCount() {
+    let sleeping = 0;
+    for (const body of fruitBodies.keys()) {
+      if (body.isSleeping) sleeping += 1;
+    }
+    return sleeping;
+  }
+
+  function hasDangerCandidate() {
+    if (state.mode !== "playing") return false;
+    for (const [body, data] of fruitBodies) {
+      const fruit = FRUITS[data.level];
+      const age = state.time - data.createdAt;
+      const top = body.position.y - fruit.radius;
+      const settled = age > FRESH_DROP_GRACE && (body.isSleeping || body.speed < 0.55);
+      if (top < DANGER_Y && settled) return true;
+    }
+    return false;
+  }
+
+  function hasPendingDangerGrace() {
+    if (state.mode !== "playing") return false;
+    for (const [body, data] of fruitBodies) {
+      const fruit = FRUITS[data.level];
+      const age = state.time - data.createdAt;
+      const top = body.position.y - fruit.radius;
+      if (top < DANGER_Y && age <= FRESH_DROP_GRACE) return true;
+    }
+    return false;
+  }
+
+  function shouldRunPhysics() {
+    return state.mode === "playing" && (activeFruitCount() > 0 || mergeQueue.length > 0);
+  }
+
+  function worldNeedsFrames() {
+    if (document.hidden) return false;
+    if (effects.length > 0) return true;
+    if (state.mode !== "playing") return false;
+    return (
+      activeFruitCount() > 0 ||
+      mergeQueue.length > 0 ||
+      cooldownRemainingMs() > 0 ||
+      state.dangerHold > 0 ||
+      hasPendingDangerGrace() ||
+      hasDangerCandidate()
+    );
   }
 
   function setupAudioContext() {
@@ -125,6 +230,25 @@
     if (context && context.state === "suspended") {
       context.resume().catch(() => {});
     }
+  }
+
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      cancelGameLoop();
+      if (audio.context && audio.context.state === "running") {
+        audio.suspendedForVisibility = true;
+        audio.context.suspend().catch(() => {});
+      }
+      return;
+    }
+
+    state.lastFrame = 0;
+    state.accumulator = 0;
+    if (audio.suspendedForVisibility && audio.context) {
+      audio.suspendedForVisibility = false;
+      audio.context.resume().catch(() => {});
+    }
+    requestRender("visible");
   }
 
   function scheduleTone(start, frequency, duration, gain, type = "sine", endFrequency = frequency) {
@@ -202,11 +326,15 @@
   }
 
   function loadImages() {
-    for (const fruit of FRUITS) {
+    FRUITS.forEach((fruit, level) => {
       const image = new Image();
+      image.onload = () => {
+        fruitSpriteCache.clear();
+        requestRender("image");
+      };
       image.src = `assets/fruits/${fruit.key}.png`;
       images.set(fruit.key, image);
-    }
+    });
   }
 
   function setupCanvasScale() {
@@ -214,7 +342,7 @@
     canvas.width = Math.round(WIDTH * dpr);
     canvas.height = Math.round(HEIGHT * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    render();
+    requestRender("scale");
   }
 
   function setupWorld() {
@@ -267,7 +395,7 @@
     Engine.clear(engine);
     setupWorld();
     syncHud();
-    render();
+    requestRender("reset");
   }
 
   function clampDropX(x, level = state.currentLevel) {
@@ -324,7 +452,6 @@
       playPauseSound(false);
     }
     syncHud();
-    render();
   }
 
   async function toggleFullscreen() {
@@ -432,7 +559,10 @@
   function step(dt) {
     state.time += dt;
     if (state.mode === "playing") {
-      Engine.update(engine, dt);
+      if (shouldRunPhysics()) {
+        Engine.update(engine, dt);
+        power.physicsSteps += 1;
+      }
       processMergeQueue();
       updateGameOverTimer(dt);
     }
@@ -440,54 +570,110 @@
   }
 
   function tick(now) {
+    power.animationFrameId = 0;
+    if (document.hidden) {
+      cancelGameLoop();
+      return;
+    }
+
+    power.animationFrames += 1;
     if (!state.lastFrame) state.lastFrame = now;
     const elapsed = Math.min(100, now - state.lastFrame);
     state.lastFrame = now;
-    state.accumulator += elapsed;
-    while (state.accumulator >= FIXED_STEP) {
-      step(FIXED_STEP);
-      state.accumulator -= FIXED_STEP;
+
+    let stepped = false;
+    if (state.mode === "playing" || effects.length > 0) {
+      state.accumulator += elapsed;
+      while (state.accumulator >= FIXED_STEP) {
+        step(FIXED_STEP);
+        state.accumulator -= FIXED_STEP;
+        stepped = true;
+      }
     }
-    render();
-    requestAnimationFrame(tick);
+
+    if (stepped || state.needsRender) {
+      render();
+      state.needsRender = false;
+    }
+
+    if (worldNeedsFrames()) {
+      requestFrame();
+    } else {
+      power.loopActive = false;
+      state.lastFrame = 0;
+      state.accumulator = 0;
+    }
   }
 
-  function roundedRectPath(x, y, width, height, radius) {
+  function roundedRectPath(x, y, width, height, radius, target = ctx) {
     const r = Math.min(radius, width / 2, height / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + width, y, x + width, y + height, r);
-    ctx.arcTo(x + width, y + height, x, y + height, r);
-    ctx.arcTo(x, y + height, x, y, r);
-    ctx.arcTo(x, y, x + width, y, r);
-    ctx.closePath();
+    target.beginPath();
+    target.moveTo(x + r, y);
+    target.arcTo(x + width, y, x + width, y + height, r);
+    target.arcTo(x + width, y + height, x, y + height, r);
+    target.arcTo(x, y + height, x, y, r);
+    target.arcTo(x, y, x + width, y, r);
+    target.closePath();
   }
 
   function drawFruitShadow(x, y, radius, alpha = 0.18) {
-    ctx.save();
-    ctx.translate(x, y + radius * 0.62);
-    ctx.scale(1.15, 0.42);
-    const shadow = ctx.createRadialGradient(0, 0, radius * 0.2, 0, 0, radius * 1.04);
-    shadow.addColorStop(0, `rgba(24, 37, 32, ${alpha})`);
-    shadow.addColorStop(1, "rgba(24, 37, 32, 0)");
-    ctx.fillStyle = shadow;
-    ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    const cacheKey = `${Math.round(radius)}:${Math.round(alpha * 100)}`;
+    let shadow = shadowCache.get(cacheKey);
+    if (!shadow) {
+      const width = Math.ceil(radius * 2.7);
+      const height = Math.ceil(radius * 1.15);
+      const shadowCanvas = document.createElement("canvas");
+      const shadowCtx = shadowCanvas.getContext("2d");
+      shadowCanvas.width = width;
+      shadowCanvas.height = height;
+      shadowCtx.save();
+      shadowCtx.translate(width / 2, height / 2);
+      shadowCtx.scale(1.15, 0.42);
+      const gradient = shadowCtx.createRadialGradient(0, 0, radius * 0.2, 0, 0, radius * 1.04);
+      gradient.addColorStop(0, `rgba(24, 37, 32, ${alpha})`);
+      gradient.addColorStop(1, "rgba(24, 37, 32, 0)");
+      shadowCtx.fillStyle = gradient;
+      shadowCtx.beginPath();
+      shadowCtx.arc(0, 0, radius, 0, Math.PI * 2);
+      shadowCtx.fill();
+      shadowCtx.restore();
+      shadow = { canvas: shadowCanvas, width, height };
+      shadowCache.set(cacheKey, shadow);
+    }
+    ctx.drawImage(shadow.canvas, x - shadow.width / 2, y + radius * 0.62 - shadow.height / 2);
+  }
+
+  function getFruitSprite(level, radius) {
+    const fruit = FRUITS[level];
+    const image = images.get(fruit.key);
+    if (!image || !image.complete || image.naturalWidth <= 0) return null;
+
+    const size = Math.ceil(radius * 2.35);
+    const cacheKey = `${level}:${size}`;
+    let sprite = fruitSpriteCache.get(cacheKey);
+    if (!sprite) {
+      const spriteCanvas = document.createElement("canvas");
+      const spriteCtx = spriteCanvas.getContext("2d");
+      spriteCanvas.width = size;
+      spriteCanvas.height = size;
+      spriteCtx.drawImage(image, 0, 0, size, size);
+      sprite = { canvas: spriteCanvas, size };
+      fruitSpriteCache.set(cacheKey, sprite);
+    }
+    return sprite;
   }
 
   function drawFruitImage(body, level, alpha = 1, overrideRadius = null) {
     const fruit = FRUITS[level];
-    const image = images.get(fruit.key);
     const radius = overrideRadius || fruit.radius;
-    const size = radius * 2.35;
+    const sprite = getFruitSprite(level, radius);
+    const size = sprite?.size || radius * 2.35;
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.translate(body.position.x, body.position.y);
     ctx.rotate(body.angle || 0);
-    if (image && image.complete && image.naturalWidth > 0) {
-      ctx.drawImage(image, -size / 2, -size / 2, size, size);
+    if (sprite) {
+      ctx.drawImage(sprite.canvas, -size / 2, -size / 2, size, size);
     } else {
       ctx.fillStyle = fruit.color;
       ctx.beginPath();
@@ -497,73 +683,78 @@
     ctx.restore();
   }
 
-  function drawBoard() {
+  function rebuildBoardCache() {
     const boardLeft = FIELD.left - 10;
     const boardRight = FIELD.right + 10;
     const boardWidth = boardRight - boardLeft;
     const boardTop = 10;
     const boardHeight = FIELD.bottom - boardTop;
-    const dangerProgress = Math.min(1, state.dangerHold / GAME_OVER_HOLD);
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    boardCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
-    const sky = ctx.createLinearGradient(0, 0, 0, HEIGHT);
+    const sky = boardCtx.createLinearGradient(0, 0, 0, HEIGHT);
     sky.addColorStop(0, "#caefff");
     sky.addColorStop(0.48, "#edfdf5");
     sky.addColorStop(1, "#fff1dd");
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    boardCtx.fillStyle = sky;
+    boardCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    const glow = ctx.createRadialGradient(104, 96, 10, 104, 96, 180);
+    const glow = boardCtx.createRadialGradient(104, 96, 10, 104, 96, 180);
     glow.addColorStop(0, "rgba(255, 247, 199, 0.94)");
     glow.addColorStop(0.4, "rgba(255, 247, 199, 0.28)");
     glow.addColorStop(1, "rgba(255, 247, 199, 0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    boardCtx.fillStyle = glow;
+    boardCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
     for (const orb of [
       { x: 88, y: 164, r: 38, color: "rgba(255, 255, 255, 0.32)" },
       { x: 402, y: 132, r: 52, color: "rgba(209, 248, 255, 0.28)" },
       { x: 426, y: 598, r: 64, color: "rgba(255, 227, 192, 0.18)" },
     ]) {
-      ctx.fillStyle = orb.color;
-      ctx.beginPath();
-      ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
-      ctx.fill();
+      boardCtx.fillStyle = orb.color;
+      boardCtx.beginPath();
+      boardCtx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+      boardCtx.fill();
     }
 
-    ctx.save();
-    ctx.shadowColor = "rgba(53, 73, 61, 0.14)";
-    ctx.shadowBlur = 24;
-    ctx.shadowOffsetY = 16;
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24);
-    const interior = ctx.createLinearGradient(0, boardTop, 0, FIELD.bottom);
+    boardCtx.save();
+    boardCtx.shadowColor = "rgba(53, 73, 61, 0.14)";
+    boardCtx.shadowBlur = 24;
+    boardCtx.shadowOffsetY = 16;
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24, boardCtx);
+    const interior = boardCtx.createLinearGradient(0, boardTop, 0, FIELD.bottom);
     interior.addColorStop(0, "rgba(255, 254, 247, 0.98)");
     interior.addColorStop(0.6, "rgba(242, 252, 248, 0.98)");
     interior.addColorStop(1, "rgba(233, 244, 233, 0.98)");
-    ctx.fillStyle = interior;
-    ctx.fill();
-    ctx.restore();
+    boardCtx.fillStyle = interior;
+    boardCtx.fill();
+    boardCtx.restore();
 
-    ctx.save();
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24);
-    ctx.clip();
-    const shimmer = ctx.createLinearGradient(boardLeft, boardTop, boardRight, FIELD.bottom);
+    boardCtx.save();
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24, boardCtx);
+    boardCtx.clip();
+    const shimmer = boardCtx.createLinearGradient(boardLeft, boardTop, boardRight, FIELD.bottom);
     shimmer.addColorStop(0, "rgba(255, 255, 255, 0.26)");
     shimmer.addColorStop(0.45, "rgba(255, 255, 255, 0)");
     shimmer.addColorStop(1, "rgba(255, 230, 204, 0.1)");
-    ctx.fillStyle = shimmer;
-    ctx.fillRect(boardLeft, boardTop, boardWidth, boardHeight);
-    ctx.fillStyle = "rgba(138, 194, 167, 0.05)";
+    boardCtx.fillStyle = shimmer;
+    boardCtx.fillRect(boardLeft, boardTop, boardWidth, boardHeight);
+    boardCtx.fillStyle = "rgba(138, 194, 167, 0.05)";
     for (let y = boardTop + 18; y < FIELD.bottom; y += 38) {
-      ctx.fillRect(boardLeft + 14, y, boardWidth - 28, 2);
+      boardCtx.fillRect(boardLeft + 14, y, boardWidth - 28, 2);
     }
-    ctx.restore();
+    boardCtx.restore();
 
-    ctx.strokeStyle = "#7da56f";
-    ctx.lineWidth = 10;
-    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24);
-    ctx.stroke();
+    boardCtx.strokeStyle = "#7da56f";
+    boardCtx.lineWidth = 10;
+    roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24, boardCtx);
+    boardCtx.stroke();
+    power.boardCacheBuilds += 1;
+  }
 
+  function drawDangerLine() {
+    const boardLeft = FIELD.left - 10;
+    const boardRight = FIELD.right + 10;
+    const dangerProgress = Math.min(1, state.dangerHold / GAME_OVER_HOLD);
     ctx.save();
     ctx.shadowColor = `rgba(237, 122, 93, ${0.18 + dangerProgress * 0.25})`;
     ctx.shadowBlur = 18 + dangerProgress * 10;
@@ -589,6 +780,13 @@
     ctx.textBaseline = "middle";
     ctx.fillText("危險線", boardRight - 52, DANGER_Y - 13);
     ctx.textBaseline = "alphabetic";
+  }
+
+  function drawBoard() {
+    if (power.boardCacheBuilds === 0) rebuildBoardCache();
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.drawImage(boardCache, 0, 0);
+    drawDangerLine();
   }
 
   function drawDropGuide() {
@@ -670,9 +868,10 @@
     drawDropGuide();
     drawFruits();
     drawEffects();
+    power.renderCount += 1;
   }
 
-  function syncHud() {
+  function syncHud(scheduleRender = true) {
     const current = FRUITS[state.currentLevel];
     const next = FRUITS[state.nextLevel];
     scoreValue.textContent = String(state.score);
@@ -703,6 +902,7 @@
     } else {
       messagePanel.classList.add("is-hidden");
     }
+    if (scheduleRender) requestRender("hud");
   }
 
   function pointerToCanvasX(event) {
@@ -713,16 +913,14 @@
   function handlePointerMove(event) {
     event.preventDefault();
     state.dropX = clampDropX(pointerToCanvasX(event));
-    render();
+    requestRender("pointer");
   }
 
   function handlePointerDown(event) {
     event.preventDefault();
     resumeAudioFromGesture();
     state.dropX = clampDropX(pointerToCanvasX(event));
-    if (dropCurrentFruit()) {
-      render();
-    }
+    if (!dropCurrentFruit()) requestRender("pointer");
   }
 
   function handleKeyDown(event) {
@@ -730,11 +928,11 @@
     if (key === "arrowleft") {
       event.preventDefault();
       state.dropX = clampDropX(state.dropX - 20);
-      render();
+      requestRender("keyboard");
     } else if (key === "arrowright") {
       event.preventDefault();
       state.dropX = clampDropX(state.dropX + 20);
-      render();
+      requestRender("keyboard");
     } else if (event.code === "Space") {
       event.preventDefault();
       resumeAudioFromGesture();
@@ -793,7 +991,21 @@
       paused: state.mode === "paused",
       gameOver: state.mode === "gameover",
       soundEnabled: audio.enabled,
-      cooldownRemainingMs: Math.max(0, Math.ceil(DROP_COOLDOWN - (state.time - state.lastDropAt))),
+      cooldownRemainingMs: cooldownRemainingMs(),
+      power: {
+        loopActive: power.loopActive || Boolean(power.animationFrameId),
+        queuedRender: state.needsRender,
+        documentHidden: document.hidden,
+        animationFrames: power.animationFrames,
+        renderCount: power.renderCount,
+        physicsSteps: power.physicsSteps,
+        activeFruits: activeFruitCount(),
+        sleepingFruits: sleepingFruitCount(),
+        cachedFruitSprites: fruitSpriteCache.size,
+        cachedShadows: shadowCache.size,
+        boardCacheBuilds: power.boardCacheBuilds,
+        lastRenderReason: power.lastRenderReason,
+      },
       fruitCount: fruits.length,
       fruits,
     });
@@ -811,6 +1023,7 @@
   window.addEventListener("keydown", handleKeyDown);
   window.addEventListener("resize", setupCanvasScale);
   document.addEventListener("fullscreenchange", setupCanvasScale);
+  document.addEventListener("visibilitychange", handleVisibilityChange);
   soundBtn.addEventListener("click", () => {
     toggleSound();
   });
@@ -841,13 +1054,19 @@
     for (let i = 0; i < steps; i += 1) {
       step(FIXED_STEP);
     }
-    syncHud();
+    syncHud(false);
     render();
+    state.needsRender = false;
+    if (worldNeedsFrames()) {
+      requestFrame();
+    } else {
+      cancelGameLoop();
+    }
   };
 
   audio.enabled = readSoundPreference();
   loadImages();
   resetGame();
   setupCanvasScale();
-  requestAnimationFrame(tick);
+  requestFrame();
 })();

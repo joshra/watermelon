@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "suika-game-pwa-v10";
+const CACHE_NAME = "suika-game-pwa-v11";
 const CORE_ASSETS = [
   "./",
   "./index.html",
