@@ -12,6 +12,7 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Toggleable Web Audio sound effects have been added for drop, merge, pause/resume, game over, and restart.
 - The game screen has been visually refreshed with a desktop side panel, richer mobile HUD layout, and deeper canvas styling for the board, shadows, and merge feedback.
 - Mobile PWA automatic power-saving has been added: the game loop now stops when idle/static, pauses work while hidden, uses Matter.js sleeping, and caches repeated canvas drawing work.
+- The mobile PWA power-saving regression has been corrected: fruit rendering uses the original PNG assets again, static caches are DPR-aware, and gameplay animation is allowed to settle more naturally before the loop stops.
 
 ## User Decisions
 
@@ -70,6 +71,13 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - 2026-05-28: Browser verification at 390x844 confirmed the mobile HUD and game board fit without horizontal clipping or scrolling. Ready and paused states both showed `0` additional animation frames, renders, or physics steps over a 2.1s idle wait.
 - 2026-05-28: Verified localhost PWA registration uses `sw.js?v=suika-game-pwa-v11`; cache key `suika-game-pwa-v11` exists and includes the shell, local Matter.js, representative fruit PNGs, manifest, and icons.
 - 2026-05-28: Verified restart returns to `ready` with score `0`, no fruits, and no console errors.
+- 2026-05-28: Corrected the visual/smoothness regression from the first power-saving pass. Removed the low-resolution scaled fruit sprite cache, made board and shadow caches DPR-aware, delayed fruit sleeping with a higher sleep threshold, kept a short post-settle animation grace window, and kept `advanceTime(ms)` from scheduling extra background frames.
+- 2026-05-28: Bumped the PWA service worker/cache version to `suika-game-pwa-v12` so installed PWAs receive the quality fix instead of keeping the v11 cached game code.
+- 2026-05-28: `node --check game.js` and `git diff --check` passed after the quality fix.
+- 2026-05-28: Ran the `develop-web-game` Playwright client after the quality fix. The game accepted multiple drops, stayed in `playing`, scored `48`, kept `loopActive: true` during active play, and produced no error artifacts.
+- 2026-05-28: Verified 390x844 browser screenshots at DPR 1 and DPR 2. The DPR 2 run reported `dpr: 2` and `boardCacheDpr: 2`, confirming the static canvas caches are rebuilt at high device pixel ratio.
+- 2026-05-28: Verified ready-state idle remains power-saving: over a 2.1s wait it added `0` animation frames, `0` renders, and `0` physics steps. Verified active play reports `loopActive: true`; paused idle stops again after the pause render.
+- 2026-05-28: Verified localhost PWA registration uses `sw.js?v=suika-game-pwa-v12`; cache key `suika-game-pwa-v12` exists and includes the shell, local Matter.js, representative fruit PNGs, manifest, and icons.
 
 ## Notes
 
@@ -77,4 +85,4 @@ Original prompt: 單機靜態網頁版的西瓜遊戲
 - Do not copy original Suika game artwork.
 - Keep the first playable build focused on the required mechanics in `SPEC.md`.
 - PWA icons are derived from the project watermelon asset and saved locally under `assets/icons/`.
-- Service worker cache version is currently `suika-game-pwa-v11`; bump it when changing cached core assets or asset paths.
+- Service worker cache version is currently `suika-game-pwa-v12`; bump it when changing cached core assets or asset paths.

@@ -25,6 +25,8 @@
   const GAME_OVER_HOLD = 2000;
   const FRESH_DROP_GRACE = 1500;
   const IDLE_SPEED = 0.035;
+  const IDLE_FRAME_GRACE = 24;
+  const FRUIT_SLEEP_THRESHOLD = 90;
   const SOUND_STORAGE_KEY = "suikaSoundEnabled";
   const UI_FONT = '"Hiragino Maru Gothic ProN", "Yuanti TC", "Arial Rounded MT Bold", ui-rounded, "SF Pro Rounded", "PingFang TC", system-ui, sans-serif';
 
@@ -69,12 +71,11 @@
   const mergeQueue = [];
   const effects = [];
   const images = new Map();
-  const fruitSpriteCache = new Map();
   const shadowCache = new Map();
   const boardCache = document.createElement("canvas");
   const boardCtx = boardCache.getContext("2d");
-  boardCache.width = WIDTH;
-  boardCache.height = HEIGHT;
+  let currentDpr = 1;
+  let boardCacheDpr = 0;
 
   const audio = {
     context: null,
@@ -104,6 +105,7 @@
     renderCount: 0,
     physicsSteps: 0,
     boardCacheBuilds: 0,
+    stableFrames: 0,
     loopActive: false,
     lastRenderReason: "init",
   };
@@ -124,6 +126,15 @@
     }
   }
 
+  function readDevicePixelRatio() {
+    return Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+  }
+
+  function enableHighQualitySmoothing(targetCtx) {
+    targetCtx.imageSmoothingEnabled = true;
+    targetCtx.imageSmoothingQuality = "high";
+  }
+
   function requestFrame() {
     if (document.hidden || power.animationFrameId) return;
     power.loopActive = true;
@@ -133,6 +144,7 @@
   function requestRender(reason = "update") {
     state.needsRender = true;
     power.lastRenderReason = reason;
+    power.stableFrames = 0;
     requestFrame();
   }
 
@@ -197,9 +209,12 @@
 
   function worldNeedsFrames() {
     if (document.hidden) return false;
-    if (effects.length > 0) return true;
+    if (effects.length > 0) {
+      power.stableFrames = 0;
+      return true;
+    }
     if (state.mode !== "playing") return false;
-    return (
+    const hasGameplayWork = (
       activeFruitCount() > 0 ||
       mergeQueue.length > 0 ||
       cooldownRemainingMs() > 0 ||
@@ -207,6 +222,15 @@
       hasPendingDangerGrace() ||
       hasDangerCandidate()
     );
+    if (hasGameplayWork) {
+      power.stableFrames = 0;
+      return true;
+    }
+    if (fruitBodies.size > 0 && power.stableFrames < IDLE_FRAME_GRACE) {
+      power.stableFrames += 1;
+      return true;
+    }
+    return false;
   }
 
   function setupAudioContext() {
@@ -326,22 +350,28 @@
   }
 
   function loadImages() {
-    FRUITS.forEach((fruit, level) => {
+    for (const fruit of FRUITS) {
       const image = new Image();
       image.onload = () => {
-        fruitSpriteCache.clear();
         requestRender("image");
       };
       image.src = `assets/fruits/${fruit.key}.png`;
       images.set(fruit.key, image);
-    });
+    }
   }
 
   function setupCanvasScale() {
-    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+    const dpr = readDevicePixelRatio();
+    const dprChanged = dpr !== currentDpr;
+    currentDpr = dpr;
     canvas.width = Math.round(WIDTH * dpr);
     canvas.height = Math.round(HEIGHT * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    enableHighQualitySmoothing(ctx);
+    if (dprChanged) {
+      shadowCache.clear();
+      boardCacheDpr = 0;
+    }
     requestRender("scale");
   }
 
@@ -412,6 +442,7 @@
       frictionAir: 0.012,
       density: 0.0012 + level * 0.00008,
       slop: 0.02,
+      sleepThreshold: FRUIT_SLEEP_THRESHOLD,
     });
     Body.setAngularVelocity(body, (seededRandom() - 0.5) * 0.04);
     fruitBodies.set(body, {
@@ -419,6 +450,7 @@
       createdAt: state.time,
     });
     Composite.add(engine.world, body);
+    power.stableFrames = 0;
     return body;
   }
 
@@ -617,15 +649,17 @@
   }
 
   function drawFruitShadow(x, y, radius, alpha = 0.18) {
-    const cacheKey = `${Math.round(radius)}:${Math.round(alpha * 100)}`;
+    const cacheKey = `${Math.round(radius)}:${Math.round(alpha * 100)}:${currentDpr}`;
     let shadow = shadowCache.get(cacheKey);
     if (!shadow) {
-      const width = Math.ceil(radius * 2.7);
-      const height = Math.ceil(radius * 1.15);
+      const width = radius * 2.7;
+      const height = radius * 1.15;
       const shadowCanvas = document.createElement("canvas");
       const shadowCtx = shadowCanvas.getContext("2d");
-      shadowCanvas.width = width;
-      shadowCanvas.height = height;
+      shadowCanvas.width = Math.ceil(width * currentDpr);
+      shadowCanvas.height = Math.ceil(height * currentDpr);
+      shadowCtx.setTransform(currentDpr, 0, 0, currentDpr, 0, 0);
+      enableHighQualitySmoothing(shadowCtx);
       shadowCtx.save();
       shadowCtx.translate(width / 2, height / 2);
       shadowCtx.scale(1.15, 0.42);
@@ -640,40 +674,26 @@
       shadow = { canvas: shadowCanvas, width, height };
       shadowCache.set(cacheKey, shadow);
     }
-    ctx.drawImage(shadow.canvas, x - shadow.width / 2, y + radius * 0.62 - shadow.height / 2);
-  }
-
-  function getFruitSprite(level, radius) {
-    const fruit = FRUITS[level];
-    const image = images.get(fruit.key);
-    if (!image || !image.complete || image.naturalWidth <= 0) return null;
-
-    const size = Math.ceil(radius * 2.35);
-    const cacheKey = `${level}:${size}`;
-    let sprite = fruitSpriteCache.get(cacheKey);
-    if (!sprite) {
-      const spriteCanvas = document.createElement("canvas");
-      const spriteCtx = spriteCanvas.getContext("2d");
-      spriteCanvas.width = size;
-      spriteCanvas.height = size;
-      spriteCtx.drawImage(image, 0, 0, size, size);
-      sprite = { canvas: spriteCanvas, size };
-      fruitSpriteCache.set(cacheKey, sprite);
-    }
-    return sprite;
+    ctx.drawImage(
+      shadow.canvas,
+      x - shadow.width / 2,
+      y + radius * 0.62 - shadow.height / 2,
+      shadow.width,
+      shadow.height,
+    );
   }
 
   function drawFruitImage(body, level, alpha = 1, overrideRadius = null) {
     const fruit = FRUITS[level];
+    const image = images.get(fruit.key);
     const radius = overrideRadius || fruit.radius;
-    const sprite = getFruitSprite(level, radius);
-    const size = sprite?.size || radius * 2.35;
+    const size = radius * 2.35;
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.translate(body.position.x, body.position.y);
     ctx.rotate(body.angle || 0);
-    if (sprite) {
-      ctx.drawImage(sprite.canvas, -size / 2, -size / 2, size, size);
+    if (image && image.complete && image.naturalWidth > 0) {
+      ctx.drawImage(image, -size / 2, -size / 2, size, size);
     } else {
       ctx.fillStyle = fruit.color;
       ctx.beginPath();
@@ -689,6 +709,10 @@
     const boardWidth = boardRight - boardLeft;
     const boardTop = 10;
     const boardHeight = FIELD.bottom - boardTop;
+    boardCache.width = Math.round(WIDTH * currentDpr);
+    boardCache.height = Math.round(HEIGHT * currentDpr);
+    boardCtx.setTransform(currentDpr, 0, 0, currentDpr, 0, 0);
+    enableHighQualitySmoothing(boardCtx);
     boardCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
     const sky = boardCtx.createLinearGradient(0, 0, 0, HEIGHT);
@@ -748,6 +772,7 @@
     boardCtx.lineWidth = 10;
     roundedRectPath(boardLeft, boardTop, boardWidth, boardHeight, 24, boardCtx);
     boardCtx.stroke();
+    boardCacheDpr = currentDpr;
     power.boardCacheBuilds += 1;
   }
 
@@ -783,9 +808,9 @@
   }
 
   function drawBoard() {
-    if (power.boardCacheBuilds === 0) rebuildBoardCache();
+    if (power.boardCacheBuilds === 0 || boardCacheDpr !== currentDpr) rebuildBoardCache();
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    ctx.drawImage(boardCache, 0, 0);
+    ctx.drawImage(boardCache, 0, 0, WIDTH, HEIGHT);
     drawDangerLine();
   }
 
@@ -1001,9 +1026,11 @@
         physicsSteps: power.physicsSteps,
         activeFruits: activeFruitCount(),
         sleepingFruits: sleepingFruitCount(),
-        cachedFruitSprites: fruitSpriteCache.size,
         cachedShadows: shadowCache.size,
         boardCacheBuilds: power.boardCacheBuilds,
+        stableFrames: power.stableFrames,
+        dpr: currentDpr,
+        boardCacheDpr,
         lastRenderReason: power.lastRenderReason,
       },
       fruitCount: fruits.length,
@@ -1057,11 +1084,6 @@
     syncHud(false);
     render();
     state.needsRender = false;
-    if (worldNeedsFrames()) {
-      requestFrame();
-    } else {
-      cancelGameLoop();
-    }
   };
 
   audio.enabled = readSoundPreference();
